@@ -26,7 +26,7 @@ This project was used in a robotics/cubing camp to guide students through:
 
 ### Prerequisites
 
-* Java (recommended: 17+)
+* Java (recommended: 10+)
 * Gradle (or use included wrapper)
 
 ### Run the project
