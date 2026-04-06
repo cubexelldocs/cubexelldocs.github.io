@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Documentation for Cubexell CubeSolver, an algorithm for solving Rubik's Cube">
+    <title>Cubexell CubeSolver Documentation</title>
+    <!-- Add any external CSS links here -->
+    <link rel="stylesheet" href="style.css"> <!-- Optional external stylesheet -->
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+        }
+        header {
+            background-color: #333;
+            color: #fff;
+            padding: 10px 0;
+            text-align: center;
+        }
+        nav {
+            display: flex;
+            justify-content: center;
+            background-color: #333;
+        }
+        nav a {
+            color: white;
+            padding: 14px 20px;
+            text-decoration: none;
+            text-align: center;
+        }
+        nav a:hover {
+            background-color: #575757;
+        }
+        .content {
+            padding: 20px;
+        }
+        h1, h2 {
+            color: #333;
+        }
+        pre {
+            background-color: #f1f1f1;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .code-block {
+            background-color: #f7f7f7;
+            padding: 10px;
+            border-left: 4px solid #4CAF50;
+        }
+        footer {
+            text-align: center;
+            padding: 10px;
+            background-color: #333;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header Section -->
+    <header>
+        <h1>Cubexell CubeSolver Documentation</h1>
+        <p>Your ultimate guide to using the Cubexell CubeSolver library for solving the Rubik's Cube.</p>
+    </header>
+
+    <!-- Navigation Menu -->
+    <nav>
+        <a href="#overview">Overview</a>
+        <a href="#installation">Installation</a>
+        <a href="#usage">Usage</a>
+        <a href="#contributing">Contributing</a>
+        <a href="#license">License</a>
+    </nav>
+
+    <!-- Main Content Section -->
+    <div class="content">
+
+        <!-- Overview Section -->
+        <section id="overview">
+            <h2>Overview</h2>
+            <p>The Cubexell CubeSolver is a powerful and efficient algorithm for solving Rubik's cubes. It provides an easy-to-use interface for both beginner and advanced users. The solver supports various cube configurations and implements state-of-the-art algorithms for optimal performance.</p>
+            <p>For more information, visit the official GitHub repository: <a href="https://github.com/randomcuber/cubesolverCampFull" target="_blank">Cubexell CubeSolver Repository</a>.</p>
+        </section>
+
+        <!-- Installation Section -->
+        <section id="installation">
+            <h2>Installation</h2>
+            <p>To get started with Cubexell CubeSolver, you need to install the necessary dependencies. Follow the instructions below:</p>
+            <h3>Prerequisites</h3>
+            <ul>
+                <li>Python 3.6+</li>
+                <li>pip (Python's package installer)</li>
+            </ul>
+            <h3>Steps</h3>
+            <ol>
+                <li>Clone the repository: 
+                    <pre><code>git clone https://github.com/randomcuber/cubesolverCampFull.git</code></pre>
+                </li>
+                <li>Navigate to the project directory: 
+                    <pre><code>cd cubesolverCampFull</code></pre>
+                </li>
+                <li>Install dependencies: 
+                    <pre><code>pip install -r requirements.txt</code></pre>
+                </li>
+            </ol>
+        </section>
+
+        <!-- Usage Section -->
+        <section id="usage">
+            <h2>Usage</h2>
+            <p>Once the CubeSolver is installed, you can begin using it to solve cubes. Here’s a simple example of how to use the library:</p>
+            <h3>Basic Example</h3>
+            <pre><code>
+import cubesolver
+
+# Define a scrambled cube state (in a valid format)
+scrambled_cube = "UDLRFBL..."
+
+# Solve the cube
+solution = cubesolver.solve(scrambled_cube)
+
+# Display the solution
+print(solution)
+            </code></pre>
+            <p>This will return a list of moves required to solve the cube.</p>
+            <h3>Advanced Usage</h3>
+            <p>For more advanced functionality, you can customize the solver with different algorithms, optimization options, and more.</p>
+            <pre><code>
+# Advanced solver options
+advanced_solution = cubesolver.solve(scrambled_cube, method="Fridrich", optimize=True)
+print(advanced_solution)
+            </code></pre>
+        </section>
+
+        <!-- Contributing Section -->
+        <section id="contributing">
+            <h2>Contributing</h2>
+            <p>We welcome contributions to the Cubexell CubeSolver! If you have an idea for an improvement, bug fix, or new feature, feel free to fork the repository and submit a pull request.</p>
+            <p>Before contributing, please ensure that you follow our code of conduct and contribution guidelines. For more details, check the <a href="https://github.com/randomcuber/cubesolverCampFull/blob/main/CONTRIBUTING.md" target="_blank">CONTRIBUTING.md</a> file.</p>
+        </section>
+
+        <!-- License Section -->
+        <section id="license">
+            <h2>License</h2>
+            <p>The Cubexell CubeSolver is open-source software released under the MIT License. See the <a href="https://github.com/randomcuber/cubesolverCampFull/blob/main/LICENSE" target="_blank">LICENSE</a> file for more information.</p>
+        </section>
+    </div>
+
+    <!-- Footer Section -->
+    <footer>
+        <p>&copy; 2026 Cubexell CubeSolver. All rights reserved.</p>
+    </footer>
+
+</body>
+</html>
