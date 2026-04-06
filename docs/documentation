@@ -1,0 +1,180 @@
+# CubeSolver Documentation
+
+## 🧩 Overview
+
+The CubeSolver project simulates and solves a Rubik’s Cube using algorithmic methods and optional robotic/vision integration.
+
+At its core, the system:
+
+1. Represents the cube as a 3D array
+2. Simulates cube moves
+3. Applies solving algorithms (e.g., Old Pochmann)
+4. Optionally executes moves on a robot
+
+---
+
+## 🧠 Cube Representation
+
+The cube is represented as a 3D array:
+
+```java
+char[][][] cubeColors;
+```
+
+### Structure
+
+* First index → face (6 total)
+* Second index → row (0–2)
+* Third index → column (0–2)
+
+Example:
+
+```java
+cubeColors[face][row][col]
+```
+
+Each element stores a character representing a color.
+
+---
+
+## 🎨 Face Indexing
+
+Each face is assigned a constant index:
+
+```java
+UP_FACE
+DOWN_FACE
+LEFT_FACE
+RIGHT_FACE
+FRONT_FACE
+BACK_FACE
+```
+
+This avoids hardcoding numbers and improves readability.
+
+---
+
+## 🔁 Cube Moves
+
+Each move (R, U, L, etc.) is implemented by:
+
+1. Rotating one face (3×3 matrix)
+2. Updating adjacent edge rows/columns
+
+### Example Concept
+
+```java
+// Rotate right face clockwise
+rotateFace(RIGHT_FACE);
+
+// Update adjacent strips
+cycleEdges(...);
+```
+
+---
+
+## 🧮 Solving Logic (Old Pochmann)
+
+The solver uses a **buffer-based method**:
+
+### Edge Solving
+
+1. Identify edge in buffer
+2. Determine target position
+3. Apply setup moves
+4. Execute swap algorithm (T-perm)
+5. Undo setup moves
+6. Repeat
+
+### Corner Solving
+
+Same idea, but with corner cycles.
+
+---
+
+## 🔑 Key Methods
+
+### `getEdgeToBeSolved()`
+
+Returns the edge currently in the buffer.
+
+---
+
+### `createUnsolvedEdges()`
+
+Returns a set of all unsolved edges.
+
+---
+
+### `areEdgesSolved()`
+
+Returns `true` if all edges are solved.
+
+---
+
+### `executeEdgeSwap(String target, List<String> solution)`
+
+Executes:
+
+* Setup moves
+* Swap algorithm
+* Undo setup moves
+
+---
+
+## 🤖 Robot Integration
+
+The robot layer converts moves into motor actions.
+
+Example:
+
+```java
+robot.execute("R U R'");
+```
+
+Each move corresponds to a physical motor rotation.
+
+---
+
+## 👁 Vision System (Optional)
+
+Pipeline:
+
+1. Capture image
+2. Divide into 9 regions per face
+3. Convert RGB → Lab color space
+4. Compute average color
+5. Classify color using distance metric
+
+---
+
+## 🧪 Example Usage
+
+```java
+Cube cube = new Cube();
+cube.scramble("R U R'");
+
+Solver solver = new Solver(cube);
+List<String> solution = solver.solve();
+
+robot.execute(solution);
+```
+
+---
+
+## 🎓 Design Philosophy
+
+This project prioritizes:
+
+* Readability over optimization
+* Educational clarity over abstraction
+* Step-by-step logic matching real solving methods
+
+---
+
+## 🚧 Future Improvements
+
+* More solving methods (CFOP, Kociemba improvements)
+* Better visualization tools
+* Simulation UI
+* Improved vision robustness
