@@ -113,7 +113,7 @@
             padding-left: 20px;
         }
 
-        /* Code Blocks */
+        /* Code Blocks & IntelliJ Syntax Highlighting */
         code {
             font-family: "JetBrains Mono", Consolas, "Liberation Mono", Menlo, Courier, monospace;
             background-color: #f1f1f1;
@@ -128,9 +128,10 @@
             color: var(--code-text);
             padding: 20px;
             border-radius: 6px;
-            border: 1px solid #313335; /* IntelliJ border color */
+            border: 1px solid #313335; 
             overflow-x: auto;
             margin-bottom: 20px;
+            line-height: 1.5;
         }
 
         pre code {
@@ -139,6 +140,13 @@
             padding: 0;
             font-size: 0.9rem;
         }
+
+        /* Syntax Colors */
+        .kw { color: #cc7832; } /* Keyword */
+        .str { color: #6a8759; } /* String */
+        .num { color: #6897bb; } /* Number */
+        .cmt { color: #808080; } /* Comment */
+        .func { color: #ffc66d; } /* Function */
 
         /* Section Spacing */
         section {
@@ -192,12 +200,12 @@
             <section id="installation">
                 <h2>2. Installation</h2>
                 <p>Ensure your Raspberry Pi is running a recent OS version with Java installed and the PiCamera enabled.</p>
-                <pre><code># Clone the repository
+<pre><code><span class="cmt"># Clone the repository</span>
 git clone https://github.com/randomcuber/cubesolverCampFull.git
 cd cubesolverCampFull
 
-# Compile using your standard Java build tool (e.g., Maven/Gradle)
-# mvn clean install</code></pre>
+<span class="cmt"># Compile using your standard Java build tool (e.g., Maven/Gradle)</span>
+<span class="cmt"># mvn clean install</span></code></pre>
             </section>
 
             <section id="ref-hardware">
@@ -208,14 +216,14 @@ cd cubesolverCampFull
                 <p>The <code>Robot</code> abstract class acts as the central hardware manager, maintaining references to six <code>Motor</code> interfaces (Up, Down, Right, Left, Front, Back). Its implementation is <code>RaspberryPiRobot</code>.</p>
                 
                 <p><strong><code>RohsStepperMotor.java</code></strong> implements <code>Motor</code> using <strong>Pi4J</strong> to control NEMA steppers. It uses a half-stepping 8-step magnet firing sequence to move the driver pins (<code>in1</code>, <code>in2</code>, <code>in3</code>, <code>in4</code>).</p>
-                <pre><code>public void doTurn(double stepsToTurn, boolean direction) {
-    // Uses a step sequence array like {1,0,0,1}, {1,0,0,0}...
-    // LockSupport.parkNanos(1000000); // 1ms delay
+<pre><code><span class="kw">public void</span> <span class="func">doTurn</span>(<span class="kw">double</span> stepsToTurn, <span class="kw">boolean</span> direction) {
+    <span class="cmt">// Uses a step sequence array like {1,0,0,1}, {1,0,0,0}...</span>
+    <span class="cmt">// LockSupport.parkNanos(1000000); // 1ms delay</span>
 }
 
-public void reset() {
-    // Sets all pins LOW. This cuts power so the physical 
-    // cube can "corner cut" without the motors locking up.
+<span class="kw">public void</span> <span class="func">reset</span>() {
+    <span class="cmt">// Sets all pins LOW. This cuts power so the physical</span>
+    <span class="cmt">// cube can "corner cut" without the motors locking up.</span>
     in1.low(); in2.low(); in3.low(); in4.low();
 }</code></pre>
             </section>
@@ -262,7 +270,7 @@ public void reset() {
             <section id="usage-cli">
                 <h2>4. Usage</h2>
                 <p>Interaction happens via <code>Main.java</code>.</p>
-                <pre><code>java -jar cubesolver.jar [Method] [Scramble] [AutoTune]</code></pre>
+<pre><code>java -jar cubesolver.jar [Method] [Scramble] [AutoTune]</code></pre>
                 
                 <ul>
                     <li><strong>Argument 1 (Method):</strong> <code>B</code> (Beginner - Default), <code>O</code> (Old Pochmann), or Kociemba.</li>
@@ -281,21 +289,19 @@ public void reset() {
             <section id="tuning-motors">
                 <h3>Tuning Motor Timing</h3>
                 <p>If your NEMA steppers skip steps, adjust the nanosecond delay in <code>RohsStepperMotor.java</code>:</p>
-                <pre><code>// In RohsStepperMotor.java -> doTurn() method
-LockSupport.parkNanos(1000000); // 1 millisecond. Increase for torque.
-</code></pre>
+<pre><code><span class="cmt">// In RohsStepperMotor.java -> doTurn() method</span>
+LockSupport.parkNanos(<span class="num">1000000</span>); <span class="cmt">// 1 millisecond. Increase for torque.</span></code></pre>
             </section>
 
             <section id="contrib-solvers">
                 <h2>6. Contributing</h2>
                 <h3>Adding a New Solving Method</h3>
-                <pre><code>public class CustomSolver implements CubeSolvingMethod {
-    public String[] solve(char[][][] cubeColors) {
-        // Implement algorithm logic here
-        return new String[]{"R", "U", "Ri"};
+<pre><code><span class="kw">public class</span> CustomSolver <span class="kw">implements</span> CubeSolvingMethod {
+    <span class="kw">public</span> String[] <span class="func">solve</span>(<span class="kw">char</span>[][][] cubeColors) {
+        <span class="cmt">// Implement algorithm logic here</span>
+        <span class="kw">return new</span> String[]{<span class="str">"R"</span>, <span class="str">"U"</span>, <span class="str">"Ri"</span>};
     }
-}
-</code></pre>
+}</code></pre>
             </section>
 
             <section id="contrib-hardware">
