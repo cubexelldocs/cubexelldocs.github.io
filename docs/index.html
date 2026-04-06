@@ -1,449 +1,402 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>CubeSolver Documentation</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
-<style>
-:root {
-    --bg: #ffffff;
-    --sidebar: #fafafa;
-    --border: #e5e5e5;
-    --text: #111111;
-    --muted: #6b7280;
-    --hover: #f3f4f6;
-    --code-bg: #0f172a;
-}
-
-* { box-sizing: border-box; }
-
-html { scroll-behavior: smooth; }
-
-body {
-    margin: 0;
-    font-family: 'Inter', system-ui, sans-serif;
-    display: flex;
-    height: 100vh;
-    background: var(--bg);
-    color: var(--text);
-}
-
-.sidebar {
-    width: 300px;
-    background: var(--sidebar);
-    border-right: 1px solid var(--border);
-    padding: 24px 18px;
-    overflow-y: auto;
-}
-
-.logo {
-    font-size: 18px;
-    font-weight: 600;
-    margin-bottom: 16px;
-}
-
-.search-box {
-    width: 100%;
-    padding: 8px;
-    border-radius: 8px;
-    border: 1px solid var(--border);
-    margin-bottom: 16px;
-}
-
-.section-title {
-    font-size: 12px;
-    font-weight: 600;
-    color: var(--muted);
-    margin-top: 18px;
-    margin-bottom: 6px;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-}
-
-.nav-link {
-    display: block;
-    padding: 7px 10px;
-    border-radius: 8px;
-    text-decoration: none;
-    color: var(--text);
-    font-size: 14px;
-}
-
-.nav-link:hover {
-    background: var(--hover);
-}
-
-.nav-link.active {
-    background: black;
-    color: white;
-}
-
-.content {
-    flex: 1;
-    padding: 48px 56px;
-    overflow-y: auto;
-    max-width: 900px;
-}
-
-.toc {
-    width: 220px;
-    border-left: 1px solid var(--border);
-    padding: 24px 16px;
-    font-size: 13px;
-    overflow-y: auto;
-}
-
-.toc a {
-    display: block;
-    margin-bottom: 6px;
-    text-decoration: none;
-    color: var(--muted);
-}
-
-.toc a:hover {
-    color: black;
-}
-
-section { margin-bottom: 64px; }
-
-h1 { font-size: 36px; margin-top: 0; }
-
-h2 { font-size: 26px; margin-top: 32px; }
-
-h3 { font-size: 20px; margin-top: 24px; }
-
-p { line-height: 1.7; font-size: 15px; }
-
-code {
-    background: #f3f4f6;
-    padding: 3px 6px;
-    border-radius: 6px;
-}
-
-pre {
-    background: var(--code-bg);
-    color: #e5e7eb;
-    padding: 16px;
-    border-radius: 10px;
-    overflow-x: auto;
-    font-size: 14px;
-}
-
-details {
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 12px;
-    margin-top: 12px;
-}
-
-summary {
-    font-weight: 600;
-    cursor: pointer;
-}
-
-.diagram {
-    border: 1px dashed var(--border);
-    padding: 16px;
-    border-radius: 10px;
-    margin-top: 12px;
-    font-family: monospace;
-}
-
-</style>
-</head>
-
-<body>
-
-<div class="sidebar">
-
-<div class="logo">CubeSolver Docs</div>
-
-<input class="search-box" placeholder="Search..." onkeyup="searchDocs(this.value)">
-
-<div class="section-title">Sections</div>
-
-<a class="nav-link" href="#introduction">Introduction</a>
-<a class="nav-link" href="#installation">Installation</a>
-<a class="nav-link" href="#reference">Reference</a>
-<a class="nav-link" href="#usage">Usage</a>
-<a class="nav-link" href="#tuning">Tuning</a>
-<a class="nav-link" href="#contributing">Contributing</a>
-
-</div>
-
-<div class="content" id="content">
-
-<section id="introduction">
-
-<h1>Introduction</h1>
-
-<p>
-CubeSolver is an integrated robotics system designed to automatically solve
-Rubik's Cubes using computer vision and precise motor control. The software
-runs on a Raspberry Pi and interfaces with a camera and stepper motors to
-observe the cube, compute a solving sequence, and physically execute moves.
-</p>
-
-<p>
-The system is designed to be modular and extensible. Each component — vision,
-solver logic, and motor control — is implemented as a separate class so that
-new solving methods, hardware configurations, or camera systems can be added
-without rewriting the entire system.
-</p>
-
-<h2>System Pipeline</h2>
-
-<div class="diagram">
-Camera → Vision → Cube State → Solver → Motor Controller → Physical Movement
-</div>
-
-<p>
-Each stage in the pipeline transforms the cube state into a new representation.
-The camera captures images, the vision system interprets colors, the solver
-computes moves, and the motor controller executes those moves.
-</p>
-
-</section>
-
-<section id="installation">
-
-<h1>Installation</h1>
-
-<p>
-This section explains how to install and configure the CubeSolver system on a
-Raspberry Pi. These steps assume basic familiarity with Linux command line
-usage and Git.
-</p>
-
-<h2>Clone Repository</h2>
-
-<pre>
-git clone https://github.com/randomcuber/cubesolverCampFull
-cd cubesolverCampFull
-</pre>
-
-<h2>Install Dependencies</h2>
-
-<pre>
-pip install opencv-python
-pip install numpy
-</pre>
-
-<p>
-OpenCV is required for computer vision operations such as color detection and
-image capture. NumPy is used for numerical processing and matrix operations
-within the solver.
-</p>
-
-<h2>Run the Program</h2>
-
-<pre>
-python main.py
-</pre>
-
-</section>
-
-<section id="reference">
-
-<h1>Reference</h1>
-
-<p>
-The Reference section documents the internal architecture of the CubeSolver
-system. Each major class is explained in detail, including responsibilities,
-methods, and how the components interact with each other.
-</p>
-
-<details open>
-
-<summary>MotorController Class</summary>
-
-<p>
-The MotorController class is responsible for controlling the motors that rotate
-cube faces. It converts logical moves (such as R or U') into electrical signals
-that drive stepper motors.
-</p>
-
-<pre>
-controller = MotorController()
-controller.rotate_face("R")
-</pre>
-
-<p>
-Internally, the controller calculates step counts, direction, and timing to
-ensure accurate and safe movement of the cube.
-</p>
-
-</details>
-
-<details>
-
-<summary>OpenCVRaspberryPiCamera Class</summary>
-
-<p>
-This class captures images from the Raspberry Pi camera and detects cube colors
-using OpenCV. It converts raw camera frames into structured cube state data
-that can be passed to the solver.
-</p>
-
-<pre>
-camera = OpenCVRaspberryPiCamera()
-state = camera.scan_cube()
-</pre>
-
-</details>
-
-</section>
-
-<section id="usage">
-
-<h1>Usage</h1>
-
-<p>
-This section explains how to operate the system, configure solver behavior, and
-run commands from the terminal.
-</p>
-
-<h2>Navigate to Project</h2>
-
-<pre>
-cd cubesolverCampFull
-</pre>
-
-<h2>Run Program</h2>
-
-<pre>
-python main.py
-</pre>
-
-<h2>Select Solving Method</h2>
-
-<pre>
-solver = Solver(method="CFOP")
-</pre>
-
-<p>
-Different solving methods can be implemented and selected dynamically using the
-method parameter. This allows experimentation with different solving
-algorithms.
-</p>
-
-</section>
-
-<section id="tuning">
-
-<h1>Tuning</h1>
-
-<p>
-Tuning is required to ensure accurate cube detection and reliable motor
-operation. Environmental factors such as lighting, camera angle, and cube
-position can affect detection accuracy.
-</p>
-
-<h2>Coordinate Tuning</h2>
-
-<pre>
-self.coordinates = [
-    (120, 80),
-    (200, 80),
-    (280, 80)
-]
-</pre>
-
-<p>
-Each coordinate represents the center of a cube sticker. Adjusting these values
-allows the camera to correctly sample colors from the cube.
-</p>
-
-<h2>Calibration Command</h2>
-
-<pre>
-python main.py --calibrate
-</pre>
-
-</section>
-
-<section id="contributing">
-
-<h1>Contributing</h1>
-
-<p>
-Developers can extend the CubeSolver system by adding new solving algorithms or
-supporting new hardware configurations.
-</p>
-
-<h2>Add New Solver</h2>
-
-<pre>
-class MySolver:
-    def solve(self, cube):
-        return ["R", "U", "R'"]
-</pre>
-
-<p>
-New solver implementations should follow the same interface as existing solver
-classes so that they can be integrated without modifying other components.
-</p>
-
-</section>
-
-</div>
-
-<div class="toc">
-
-<strong>On this page</strong>
-
-<a href="#introduction">Introduction</a>
-<a href="#installation">Installation</a>
-<a href="#reference">Reference</a>
-<a href="#usage">Usage</a>
-<a href="#tuning">Tuning</a>
-<a href="#contributing">Contributing</a>
-
-</div>
-
-<script>
-
-function searchDocs(query) {
-    query = query.toLowerCase();
-
-    const sections = document.querySelectorAll("section");
-
-    sections.forEach(section => {
-        if (section.innerText.toLowerCase().includes(query))
-            section.style.display = "block";
-        else
-            section.style.display = "none";
-    });
-}
-
-const links = document.querySelectorAll('.nav-link');
-const sections = document.querySelectorAll('section');
-
-const observer = new IntersectionObserver(entries => {
-
-    entries.forEach(entry => {
-
-        if (entry.isIntersecting) {
-
-            links.forEach(link => link.classList.remove('active'));
-
-            const id = entry.target.getAttribute('id');
-
-            const activeLink = document.querySelector(`.nav-link[href="#${id}"]`);
-
-            if (activeLink) activeLink.classList.add('active');
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CubeXell CubeSolver Documentation</title>
+    <style>
+        /* Modern Black & White Theme */
+        :root {
+            --bg-color: #ffffff;
+            --text-color: #111111;
+            --sidebar-bg: #f9f9f9;
+            --border-color: #e5e5e5;
+            --code-bg: #000000;
+            --code-text: #f8f8f2;
+            --link-hover: #000000;
+            --link-color: #555555;
         }
 
-    });
+        html {
+            scroll-behavior: smooth;
+        }
 
-}, { threshold: 0.4 });
+        body {
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            color: var(--text-color);
+            background-color: var(--bg-color);
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
 
-sections.forEach(section => observer.observe(section));
+        /* Left Sidebar Navigation */
+        .sidebar {
+            width: 280px;
+            background-color: var(--sidebar-bg);
+            border-right: 1px solid var(--border-color);
+            padding: 30px 20px;
+            overflow-y: auto;
+            flex-shrink: 0;
+        }
 
-</script>
+        .sidebar h1 {
+            font-size: 1.2rem;
+            margin-top: 0;
+            margin-bottom: 30px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .section-title {
+            margin-top: 25px;
+            margin-bottom: 10px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #888;
+        }
+
+        .sidebar a {
+            display: block;
+            padding: 8px 0;
+            color: var(--link-color);
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: color 0.2s ease;
+        }
+
+        .sidebar a:hover {
+            color: var(--link-hover);
+            font-weight: 500;
+        }
+
+        /* Main Content Area */
+        .content {
+            flex: 1;
+            padding: 40px 60px;
+            overflow-y: auto;
+        }
+
+        .content-inner {
+            max-width: 800px; /* Constrains width for readability, removes right column effect */
+            margin: 0 auto;
+        }
+
+        h2 {
+            font-size: 2rem;
+            margin-top: 50px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 10px;
+            font-weight: 600;
+            letter-spacing: -0.5px;
+        }
+
+        h3 {
+            font-size: 1.4rem;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        p, li {
+            line-height: 1.7;
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        ul, ol {
+            margin-bottom: 20px;
+            padding-left: 20px;
+        }
+
+        /* Code Blocks */
+        code {
+            font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
+            background-color: #f1f1f1;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
+
+        pre {
+            background-color: var(--code-bg);
+            color: var(--code-text);
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin-bottom: 20px;
+        }
+
+        pre code {
+            background-color: transparent;
+            color: inherit;
+            padding: 0;
+            font-size: 0.9rem;
+        }
+
+        /* Section Spacing */
+        section {
+            margin-bottom: 80px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <h1>CubeSolver Docs</h1>
+
+        <a href="#introduction">Introduction</a>
+        <a href="#installation">Installation</a>
+
+        <div class="section-title">Reference</div>
+        <a href="#ref-architecture">System Architecture</a>
+        <a href="#ref-motor">MotorController</a>
+        <a href="#ref-camera">OpenCVCamera</a>
+        <a href="#ref-solver">Solver & Cube</a>
+
+        <div class="section-title">Usage</div>
+        <a href="#usage-cli">Command Line Basics</a>
+        <a href="#usage-config">Configuration</a>
+
+        <div class="section-title">Tuning</div>
+        <a href="#tuning-vision">Vision Coordinates</a>
+        <a href="#tuning-motors">Motor Timing</a>
+
+        <div class="section-title">Contributing</div>
+        <a href="#contrib-solvers">Adding Solvers</a>
+        <a href="#contrib-hardware">Hardware Support</a>
+    </div>
+
+    <div class="content">
+        <div class="content-inner">
+
+            <section id="introduction">
+                <h2>1. Introduction</h2>
+                <p>Welcome to the documentation for the <strong>CubeXell CubeSolver</strong>. This project is a complete hardware and software pipeline designed to autonomously scan, calculate, and physically solve a 3x3 Rubik's Cube.</p>
+                
+                <h3>System Overview</h3>
+                <p>The system operates in a sequential pipeline:</p>
+                <ol>
+                    <li><strong>Camera & Vision:</strong> An overhead Raspberry Pi camera captures the cube's faces. OpenCV processes the images to extract sticker colors.</li>
+                    <li><strong>State Generation:</strong> The color data is mapped into a standard mathematical representation of a Rubik's Cube.</li>
+                    <li><strong>Solver Engine:</strong> An algorithm (e.g., Kociemba, CFOP, or Beginner) calculates the most efficient series of moves to solve the cube.</li>
+                    <li><strong>Motor Control:</strong> The solution string is translated into electronic signals sent to stepper motor drivers, physically rotating the cube's faces to the solved state.</li>
+                </ol>
+
+                <h3>Hardware Requirements</h3>
+                <ul>
+                    <li>Raspberry Pi (3B+ or 4 recommended)</li>
+                    <li>Raspberry Pi Camera Module v2</li>
+                    <li>6x NEMA 17 Stepper Motors (one for each face)</li>
+                    <li>6x A4988 or DRV8825 Motor Drivers</li>
+                    <li>Custom 3D printed frame and cube center-caps</li>
+                </ul>
+            </section>
+
+            <section id="installation">
+                <h2>2. Installation</h2>
+                <p>Follow these steps to set up the software environment on your Raspberry Pi.</p>
+
+                <h3>Prerequisites</h3>
+                <p>Ensure your Raspberry Pi is running a recent version of Raspberry Pi OS with Python 3.9+ installed. You must also enable the camera interface via <code>sudo raspi-config</code>.</p>
+
+                <h3>Install Dependencies</h3>
+                <pre><code>sudo apt update
+sudo apt install python3-pip libopencv-dev python3-opencv
+
+# Clone the repository
+git clone https://github.com/randomcuber/cubesolverCampFull
+cd cubesolverCampFull
+
+# Install Python requirements
+pip3 install -r requirements.txt</code></pre>
+
+                <h3>Verify Setup</h3>
+                <p>Run the test script to ensure the camera and GPIO pins are accessible:</p>
+                <pre><code>python3 main.py --test-hardware</code></pre>
+            </section>
+
+            <section id="ref-architecture">
+                <h2>3. Reference</h2>
+                <p>This section documents the core classes that make up the CubeSolver architecture. Understanding these classes is crucial if you intend to modify the motor logic or vision system.</p>
+            </section>
+
+            <section id="ref-motor">
+                <h3>Class: MotorController</h3>
+                <p>The <code>MotorController</code> handles the GPIO signals sent to the stepper motor drivers. It translates standard cube notation (U, R', D2) into step and direction pulses.</p>
+                
+                <p><strong>Responsibilities:</strong></p>
+                <ul>
+                    <li>Initialize GPIO pins for STEP and DIR outputs.</li>
+                    <li>Control acceleration and deceleration of the stepper motors.</li>
+                    <li>Execute full sequence strings smoothly.</li>
+                </ul>
+
+                <pre><code>class MotorController:
+    def __init__(self, step_delay=0.001):
+        self.step_delay = step_delay
+        # GPIO Setup happens here...
+
+    def rotate_face(self, face_move):
+        """
+        Executes a single face rotation.
+        :param face_move: String (e.g., "R", "L'", "U2")
+        """
+        pass
+
+    def execute_sequence(self, moves_list):
+        """
+        Iterates over a list of moves and triggers motors sequentially.
+        """
+        for move in moves_list:
+            self.rotate_face(move)</code></pre>
+            </section>
+
+            <section id="ref-camera">
+                <h3>Class: OpenCVRaspberryPiCamera</h3>
+                <p>This class is responsible for interacting with the PiCamera, capturing frames, and using computer vision to determine the color of the 54 stickers on the cube.</p>
+
+                <p><strong>Methods:</strong></p>
+                <ul>
+                    <li><code>capture_face(face_name)</code>: Takes a picture of the current top-facing side.</li>
+                    <li><code>extract_colors(frame)</code>: Uses HSV color bounding to determine sticker colors at predefined coordinates.</li>
+                </ul>
+
+                <pre><code>class OpenCVRaspberryPiCamera:
+    def __init__(self):
+        self.camera = cv2.VideoCapture(0)
+        # BGR to HSV color bounds defined here
+
+    def scan_cube(self):
+        """
+        Returns a 54-character string representing the cube state.
+        Format: UUUUUUUUURRRRRRRRRFFFFFFFFFDDDDDDDDDLLLLLLLLLBBBBBBBBB
+        """
+        pass</code></pre>
+            </section>
+
+            <section id="ref-solver">
+                <h3>Classes: Solver & Cube</h3>
+                <p>The <code>Cube</code> class maintains the virtual state of the puzzle. The <code>Solver</code> class takes a <code>Cube</code> instance and returns an array of moves.</p>
+                <pre><code>from core import Cube, Solver
+
+my_cube = Cube(state_string="DUUBULDBFRBFRRULLLBRDFFFBLURDBFDFDRFRULCDUUB... ")
+my_solver = Solver(method="kociemba")
+
+solution = my_solver.solve(my_cube)
+print(solution) # Output: ["R", "U", "R'", "F2", "D'"]</code></pre>
+            </section>
+
+            <section id="usage-cli">
+                <h2>4. Usage</h2>
+                <p>The primary way to interact with the system is through the command line using <code>main.py</code>.</p>
+
+                <h3>Running a Full Solve Pipeline</h3>
+                <p>To run the default sequence (Scan -> Calculate -> Solve physically):</p>
+                <pre><code>python3 main.py --run</code></pre>
+
+                <h3>Command Line Arguments</h3>
+                <p>You can customize the execution using flags:</p>
+                <ul>
+                    <li><code>--method [name]</code>: Choose the solving algorithm (<code>kociemba</code>, <code>cfop</code>, <code>beginner</code>).</li>
+                    <li><code>--dry-run</code>: Scans and calculates the solution, but does <strong>not</strong> engage the motors.</li>
+                    <li><code>--scramble [length]</code>: Instructs the motors to randomly scramble the cube before solving.</li>
+                </ul>
+                <pre><code>python3 main.py --run --method cfop --dry-run</code></pre>
+            </section>
+
+            <section id="usage-config">
+                <h3>Configuration File</h3>
+                <p>Persistent settings are stored in <code>config.json</code> in the root directory. You can edit this file to change default behaviors without using command line flags.</p>
+                <pre><code>{
+    "default_solver": "kociemba",
+    "motor_speed_rpm": 120,
+    "camera_resolution": [640, 480],
+    "log_level": "INFO"
+}</code></pre>
+            </section>
+
+            <section id="tuning-vision">
+                <h2>5. Tuning</h2>
+                <p>Because lighting and hardware builds vary, the vision and motor systems must be tuned to your specific physical setup.</p>
+
+                <h3>Tuning Vision Coordinates</h3>
+                <p>The camera needs to know exactly which pixels to look at to determine a sticker's color. These are defined as an array of (x, y) coordinates in the <code>OpenCVRaspberryPiCamera</code> class.</p>
+                
+                <p>To tune these, run the calibration tool:</p>
+                <pre><code>python3 main.py --calibrate-vision</code></pre>
+                
+                <p>This will open a GUI window showing the live camera feed. You will see green circles drawn on the frame using OpenCV.</p>
+                
+                <pre><code># Inside OpenCVRaspberryPiCamera.py
+# Adjust these coordinates to match the center of your cube's stickers in the frame
+self.sticker_coords = [
+    (120, 120), (320, 120), (520, 120), # Top row
+    (120, 240), (320, 240), (520, 240), # Middle row
+    (120, 360), (320, 360), (520, 360)  # Bottom row
+]
+
+# Drawing logic for visual debugging
+for (x, y) in self.sticker_coords:
+    cv2.circle(frame, (x, y), radius=5, color=(0, 255, 0), thickness=-1)
+</code></pre>
+                <p>If the circles do not land perfectly in the center of your physical cube's stickers, adjust the integers in <code>self.sticker_coords</code> until they do.</p>
+            </section>
+
+            <section id="tuning-motors">
+                <h3>Tuning Motor Timing</h3>
+                <p>If your stepper motors are skipping steps or binding, you may need to adjust the delay between steps. Lower delays mean faster turns, but less torque. Open <code>motor_config.py</code> and adjust the <code>STEP_DELAY</code>.</p>
+                <pre><code># Increase this value if motors skip steps (e.g. 0.002)
+# Decrease for faster solves (e.g. 0.0008)
+STEP_DELAY = 0.001 
+</code></pre>
+            </section>
+
+            <section id="contrib-solvers">
+                <h2>6. Contributing</h2>
+                <p>We welcome pull requests! The two most common areas for contribution are adding new mathematical solvers or adding support for different motor driver boards.</p>
+
+                <h3>Adding a New Solving Method</h3>
+                <p>To add a custom solver, create a new class in the <code>solvers/</code> directory that inherits from <code>BaseSolver</code>. You must implement the <code>solve()</code> method.</p>
+                
+                <pre><code>from core.base_solver import BaseSolver
+
+class RouxSolver(BaseSolver):
+    def __init__(self):
+        super().__init__(name="roux")
+
+    def solve(self, cube_state_string):
+        """
+        Input: 54-char string representing the cube.
+        Output: List of strings representing moves.
+        """
+        solution_moves = []
+        # Implement Roux logic here
+        return solution_moves
+</code></pre>
+                <p>Once created, register it in the <code>solver_factory.py</code> file so it can be called via the command line.</p>
+            </section>
+
+            <section id="contrib-hardware">
+                <h3>Supporting New Hardware</h3>
+                <p>If you are using an Arduino or a different motor shield instead of raw GPIO pins, you can write a custom wrapper. Create a class that implements the <code>MotorController</code> interface (specifically the <code>rotate_face</code> method) and submit it via a Pull Request.</p>
+                
+                <p><strong>Steps to Contribute:</strong></p>
+                <ol>
+                    <li>Fork the repository.</li>
+                    <li>Create a feature branch (<code>git checkout -b feature/arduino-support</code>).</li>
+                    <li>Commit your changes (<code>git commit -m "Add Arduino serial motor controller"</code>).</li>
+                    <li>Push to the branch (<code>git push origin feature/arduino-support</code>).</li>
+                    <li>Open a Pull Request on GitHub.</li>
+                </ol>
+            </section>
+
+        </div>
+    </div>
 
 </body>
 </html>
