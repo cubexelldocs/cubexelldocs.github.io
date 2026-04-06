@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CubeXell CubeSolver Documentation</title>
+    <title>Cubexell CubeSolver Documentation</title>
     <style>
         /* Modern Black & White Theme */
         :root {
@@ -11,8 +11,8 @@
             --text-color: #111111;
             --sidebar-bg: #f9f9f9;
             --border-color: #e5e5e5;
-            --code-bg: #000000;
-            --code-text: #f8f8f2;
+            --code-bg: #2b2b2b; /* IntelliJ Darcula Background */
+            --code-text: #a9b7c6; /* IntelliJ Darcula Text */
             --link-hover: #000000;
             --link-color: #555555;
         }
@@ -81,7 +81,7 @@
         }
 
         .content-inner {
-            max-width: 800px; /* Constrains width for readability, removes right column effect */
+            max-width: 800px;
             margin: 0 auto;
         }
 
@@ -115,9 +115,10 @@
 
         /* Code Blocks */
         code {
-            font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
+            font-family: "JetBrains Mono", Consolas, "Liberation Mono", Menlo, Courier, monospace;
             background-color: #f1f1f1;
-            padding: 2px 6px;
+            color: #24292e;
+            padding: 3px 6px;
             border-radius: 4px;
             font-size: 0.9em;
         }
@@ -126,7 +127,8 @@
             background-color: var(--code-bg);
             color: var(--code-text);
             padding: 20px;
-            border-radius: 8px;
+            border-radius: 6px;
+            border: 1px solid #313335; /* IntelliJ border color */
             overflow-x: auto;
             margin-bottom: 20px;
         }
@@ -153,18 +155,18 @@
         <a href="#installation">Installation</a>
 
         <div class="section-title">Reference</div>
-        <a href="#ref-architecture">System Architecture</a>
-        <a href="#ref-motor">MotorController (RohsStepper)</a>
-        <a href="#ref-camera">OpenCVCamera & Inspector</a>
-        <a href="#ref-cube-data">Cube Data Structure</a>
-        <a href="#ref-solver">Solver Algorithms</a>
+        <a href="#ref-hardware">Hardware: Robot & Motors</a>
+        <a href="#ref-vision">Vision: Camera & Inspector</a>
+        <a href="#ref-cube">Data: Cube & Constants</a>
+        <a href="#ref-solvers">Solver Algorithms</a>
+        <a href="#ref-utils">Utilities (Scrambler & Fixer)</a>
 
         <div class="section-title">Usage</div>
         <a href="#usage-cli">Command Line Basics</a>
 
         <div class="section-title">Tuning</div>
-        <a href="#tuning-vision">Vision Coordinates</a>
-        <a href="#tuning-motors">Motor Timing</a>
+        <a href="#tuning-vision">Vision AutoTune</a>
+        <a href="#tuning-motors">Motor Step Delay</a>
 
         <div class="section-title">Contributing</div>
         <a href="#contrib-solvers">Adding Solvers</a>
@@ -176,189 +178,129 @@
 
             <section id="introduction">
                 <h2>1. Introduction</h2>
-                <p>Welcome to the documentation for the <strong>CubeXell CubeSolver</strong>. This project is a complete Java-based hardware and software pipeline designed to autonomously scan, calculate, and physically solve a 3x3 Rubik's Cube.</p>
+                <p>Welcome to the documentation for the <strong>Cubexell CubeSolver</strong>. This project is a complete Java-based hardware and software pipeline designed to autonomously scan, calculate, and physically solve a 3x3 Rubik's Cube via Raspberry Pi.</p>
                 
                 <h3>System Overview</h3>
-                <p>The system operates in a sequential pipeline:</p>
                 <ol>
                     <li><strong>Camera & Vision:</strong> An overhead Raspberry Pi camera captures the cube's faces. OpenCV (via JavaCPP) processes the images to extract sticker colors.</li>
-                    <li><strong>State Generation:</strong> The color data is mapped into a mathematical 3D array representation of a Rubik's Cube.</li>
+                    <li><strong>State Generation:</strong> The color data is mapped into a mathematical 3D array representation.</li>
                     <li><strong>Solver Engine:</strong> A selected algorithm calculates the most efficient series of moves.</li>
-                    <li><strong>Motor Control:</strong> The solution is translated into electronic signals sent via Pi4J to stepper motor drivers, physically rotating the cube's faces.</li>
+                    <li><strong>Motor Control:</strong> The solution is translated into electronic signals sent via Pi4J to NEMA stepper motors.</li>
                 </ol>
-
-                <h3>Hardware Requirements</h3>
-                <ul>
-                    <li>Raspberry Pi (3B+ or 4 recommended)</li>
-                    <li>Raspberry Pi Camera Module</li>
-                    <li>6x NEMA 17 Stepper Motors (one for each face)</li>
-                    <li>6x A4988 or DRV8825 Motor Drivers</li>
-                    <li>Custom frame and cube center-caps</li>
-                </ul>
             </section>
 
             <section id="installation">
                 <h2>2. Installation</h2>
-                <p>Ensure your Raspberry Pi is running a recent OS version with Java installed and the camera interface enabled.</p>
-
-                <h3>Dependencies</h3>
-                <p>The project relies heavily on Maven/Gradle for dependency management. Ensure you have the following core libraries configured:</p>
-                <ul>
-                    <li><strong>Pi4J:</strong> For GPIO control and motor stepping.</li>
-                    <li><strong>OpenCV (JavaCPP):</strong> For image processing and color detection.</li>
-                    <li><strong>Kociemba Two-Phase Algorithm:</strong> For optimal solving.</li>
-                </ul>
-
-                <h3>Clone & Compile</h3>
-                <pre><code>git clone https://github.com/randomcuber/cubesolverCampFull.git
+                <p>Ensure your Raspberry Pi is running a recent OS version with Java installed and the PiCamera enabled.</p>
+                <pre><code># Clone the repository
+git clone https://github.com/randomcuber/cubesolverCampFull.git
 cd cubesolverCampFull
+
 # Compile using your standard Java build tool (e.g., Maven/Gradle)
 # mvn clean install</code></pre>
             </section>
 
-            <section id="ref-architecture">
+            <section id="ref-hardware">
                 <h2>3. Reference</h2>
-                <p>This section documents the core Java classes that make up the CubeXell architecture. The system uses strong object-oriented principles, dividing responsibilities among distinct interfaces (<code>Motor</code>, <code>CubeColorInspector</code>, <code>CubeSolvingMethod</code>).</p>
-                
-                <h3>Abstract Class: Robot & RaspberryPiRobot</h3>
-                <p>The <code>Robot</code> class is the central hardware manager. It maintains references to six <code>Motor</code> objects (Up, Down, Right, Left, Front, Back). The physical implementation is handled by the <code>RaspberryPiRobot</code> subclass.</p>
-                <p><strong>Key Methods:</strong></p>
-                <ul>
-                    <li><code>U()</code>, <code>Ui()</code>, <code>U2()</code>...: Executes rotations on the respective face motors.</li>
-                    <li><code>resetMotors()</code>: Cuts power to all motor coils via a Shutdown Hook in <code>Main.java</code>. This ensures the motors don't forcefully hold their position, allowing the physical cube to "corner cut" and self-align.</li>
-                </ul>
-            </section>
+                <p>This section documents the core Java architecture.</p>
 
-            <section id="ref-motor">
-                <h3>Class: RohsStepperMotor</h3>
-                <p>Implements the <code>Motor</code> interface using the <strong>Pi4J</strong> library to control NEMA-style stepper motors via 4-pin drivers.</p>
+                <h3>Hardware: Robot & Motors</h3>
+                <p>The <code>Robot</code> abstract class acts as the central hardware manager, maintaining references to six <code>Motor</code> interfaces (Up, Down, Right, Left, Front, Back). Its implementation is <code>RaspberryPiRobot</code>.</p>
                 
-                <p><strong>Responsibilities:</strong></p>
-                <ul>
-                    <li>Controls the 4 digital output pins (<code>in1</code>, <code>in2</code>, <code>in3</code>, <code>in4</code>).</li>
-                    <li>Manages the 8-step magnet firing sequence (half-stepping) for precise control: <code>{1,0,0,1}, {1,0,0,0}, {1,1,0,0}...</code>.</li>
-                </ul>
-
+                <p><strong><code>RohsStepperMotor.java</code></strong> implements <code>Motor</code> using <strong>Pi4J</strong> to control NEMA steppers. It uses a half-stepping 8-step magnet firing sequence to move the driver pins (<code>in1</code>, <code>in2</code>, <code>in3</code>, <code>in4</code>).</p>
                 <pre><code>public void doTurn(double stepsToTurn, boolean direction) {
-    // Iterates through the stepSequence array
-    // Uses LockSupport.parkNanos(1000000) for a 1-millisecond delay between steps
+    // Uses a step sequence array like {1,0,0,1}, {1,0,0,0}...
+    // LockSupport.parkNanos(1000000); // 1ms delay
 }
 
 public void reset() {
-    // Sets all pins LOW to allow corner cutting
+    // Sets all pins LOW. This cuts power so the physical 
+    // cube can "corner cut" without the motors locking up.
     in1.low(); in2.low(); in3.low(); in4.low();
 }</code></pre>
             </section>
 
-            <section id="ref-camera">
-                <h3>Class: OpenCvRaspberryPiCamera</h3>
-                <p>Implements the <code>CubeColorInspector</code> interface. This class uses <code>org.bytedeco.opencv</code> to capture frames (default 3280x2464) and extract sticker colors using LAB/HSV color space bounds.</p>
-
-                <p><strong>Mechanics:</strong></p>
-                <p>The robot physically rotates the cube to expose different faces to the top-mounted camera. It samples specific rectangular pixel areas to detect the color of each sticker. It also supports an <code>autoTune</code> mode to generate dynamic reference values.</p>
-
-                <pre><code>public char[][][] inspect() {
-    // Rotates the cube, captures an image, inspects the face, and returns the 3D char array
-    captureImage();
-    char[][] backFace = inspectBackFace('B');
-    // ... continues for all faces ...
-    return cubeColors;
-}</code></pre>
+            <section id="ref-vision">
+                <h3>Vision: Camera & Inspector</h3>
+                <p>The system uses a <code>CubeColorInspector</code> interface containing <code>startup()</code>, <code>inspect()</code>, and <code>shutdown()</code>.</p>
+                
+                <p>The implementation, <strong><code>OpenCvRaspberryPiCamera</code></strong>, uses JavaCPP and OpenCV. It captures frames (default 3280x2464) and reads reference colors from a <code>labValues.txt</code> file to determine sticker colors via LAB/HSV bounds.</p>
             </section>
 
-            <section id="ref-cube-data">
-                <h3>Data Structure: Cube & CubeConstants</h3>
-                <p>The <code>Cube</code> class holds the virtual state of the puzzle as a highly efficient 3D character array: <code>char[6][3][3]</code>.</p>
-                
-                <p><strong>Face Indexing (from <code>CubeConstants.java</code>):</strong></p>
+            <section id="ref-cube">
+                <h3>Data: Cube & Constants</h3>
+                <p>The puzzle state is stored efficiently as a 3D character array: <code>char[6][3][3]</code>. The indexing is defined in <strong><code>CubeConstants.java</code></strong>:</p>
                 <ul>
-                    <li><code>0</code>: Left Face (Orange)</li>
-                    <li><code>1</code>: Back Face (Blue)</li>
-                    <li><code>2</code>: Up Face (White)</li>
-                    <li><code>3</code>: Front Face (Green)</li>
-                    <li><code>4</code>: Right Face (Red)</li>
-                    <li><code>5</code>: Down Face (Yellow)</li>
+                    <li><code>0</code>: Left (Orange)</li>
+                    <li><code>1</code>: Back (Blue)</li>
+                    <li><code>2</code>: Up (White)</li>
+                    <li><code>3</code>: Front (Green)</li>
+                    <li><code>4</code>: Right (Red)</li>
+                    <li><code>5</code>: Down (Yellow)</li>
                 </ul>
 
-                <p><strong>Move Optimization:</strong></p>
-                <p>The <code>Cube</code> class contains a <code>simplifySolution(String[] solution)</code> method. It loops through generated solutions and mathematically combines adjacent redundant moves (e.g., <code>U</code> + <code>U</code> &rarr; <code>U2</code>, or <code>R</code> + <code>Ri</code> &rarr; <em>cancels out</em>).</p>
+                <p><strong>Move Optimization:</strong> <code>Cube.java</code> contains <code>simplifySolution(String[] solution)</code>. It loops through generated sequences and mathematically combines adjacent redundant moves (e.g., <code>U</code> + <code>U</code> &rarr; <code>U2</code>, or <code>R</code> + <code>Ri</code> &rarr; <em>cancels out</em>).</p>
             </section>
 
-            <section id="ref-solver">
+            <section id="ref-solvers">
                 <h3>Solver Algorithms</h3>
-                <p>The system defines a <code>CubeSolvingMethod</code> interface with a single method: <code>String[] solve(char[][][] cubeColors)</code>. Three implementations are provided:</p>
+                <p>Classes must implement <code>CubeSolvingMethod</code> (returning a <code>String[]</code> of moves). Three are provided:</p>
                 
                 <ul>
-                    <li><strong><code>BeginnerMethod</code>:</strong> A layer-by-layer deterministic approach. It locates specific pieces using coordinate searches and applies hardcoded algorithms sequentially.</li>
-                    <li><strong><code>OldPochmannMethod</code>:</strong> A blindfolded solving technique executing targeted edge/corner swaps (e.g., T-Perms).</li>
-                    <li><strong><code>KociembaAlgorithm</code>:</strong> Maps the 3D char array into a 54-character string and feeds it to <code>Search.solution()</code> to find the mathematical optimal sequence.</li>
+                    <li><strong><code>BeginnerMethod.java</code>:</strong> A layer-by-layer deterministic approach. It uses <code>findEdgePosition()</code> and relies on massive sequential algorithms (<code>solveCrossPieces()</code>, <code>solve1stLayer()</code>, etc.) to inject hardcoded moves (like <code>{"R", "U", "Ri", "Ui"}</code>).</li>
+                    <li><strong><code>OldPochmannMethod.java</code>:</strong> A blindfolded solving technique executing targeted edge/corner swaps using a <code>HashSet</code> of unsolved pieces and sequences like <code>TPERM</code>.</li>
+                    <li><strong><code>KociembaAlgorithm.java</code>:</strong> Maps the char array into a 54-character string and feeds it to <code>org.kociemba.twophase.Search.solution()</code> to find an optimal two-phase mathematical solve.</li>
                 </ul>
+            </section>
+
+            <section id="ref-utils">
+                <h3>Utilities: Scrambler & Fixer</h3>
+                <p><strong><code>CubeScrambler.java</code>:</strong> Selects random moves from the 18 <code>POSSIBLE_MOVES</code> array, ensuring the same face isn't rotated consecutively.</p>
+                <p><strong><code>CubeFixer.java</code>:</strong> An error-correction tool. If the camera misreads a color, `CubeFixer` checks if the cube is mathematically solvable using `OldPochmannMethod`. If not, it calculates overrepresented/underrepresented colors and attempts to forcefully rewrite the `char[][][]` array until it is solvable.</p>
             </section>
 
             <section id="usage-cli">
                 <h2>4. Usage</h2>
-                <p>The primary way to interact with the system is by passing arguments to <code>Main.java</code>.</p>
-
-                <h3>Command Line Arguments</h3>
-                <p>The program accepts up to three arguments in the following format:</p>
+                <p>Interaction happens via <code>Main.java</code>.</p>
                 <pre><code>java -jar cubesolver.jar [Method] [Scramble] [AutoTune]</code></pre>
                 
                 <ul>
-                    <li><strong>Argument 1 (Method):</strong> <code>B</code> (Beginner - Default), <code>O</code> (Old Pochmann), or any other key for Kociemba.</li>
-                    <li><strong>Argument 2 (Scramble):</strong> <code>Y</code> physically scrambles the cube via <code>CubeScrambler</code> first (Default). <code>N</code> inspects the current physical state using the camera.</li>
-                    <li><strong>Argument 3 (AutoTune):</strong> <code>Y</code> enables the auto-tune flag for the OpenCV camera to recalibrate colors.</li>
+                    <li><strong>Argument 1 (Method):</strong> <code>B</code> (Beginner - Default), <code>O</code> (Old Pochmann), or Kociemba.</li>
+                    <li><strong>Argument 2 (Scramble):</strong> <code>Y</code> physically scrambles the cube via <code>CubeScrambler</code> first (Default). <code>N</code> tells the system to inspect the existing physical state.</li>
+                    <li><strong>Argument 3 (AutoTune):</strong> <code>Y</code> enables the auto-tune flag for OpenCV.</li>
                 </ul>
-                <pre><code># Example: Use Kociemba, DO NOT scramble first, enable AutoTune
-java -jar cubesolver.jar K N Y</code></pre>
             </section>
 
             <section id="tuning-vision">
                 <h2>5. Tuning</h2>
-                <p>Hardware variances and lighting conditions require the vision and motor delays to be tuned.</p>
 
-                <h3>Tuning Vision Coordinates</h3>
-                <p>The <code>OpenCvRaspberryPiCamera</code> uses hardcoded coordinate grids to locate stickers. If your camera is mounted slightly differently, adjust the global offset variables at the top of the class:</p>
-                
-                <pre><code>// In OpenCvRaspberryPiCamera.java
-int offsetX = -200;
-int offsetY = -190;
-
-// Example of how offsets are applied internally:
-findColor(970 + offsetX, 700 + offsetY, 90, 45);
-</code></pre>
-                <p>By tweaking <code>offsetX</code> and <code>offsetY</code>, you shift the entire sampling grid left/right or up/down to align with your camera's field of view.</p>
+                <h3>Vision AutoTune</h3>
+                <p>If lighting changes, you can calibrate the camera by passing <code>Y</code> as the 3rd command line argument. This triggers the <code>autoTune</code> logic in <code>OpenCvRaspberryPiCamera</code>, which scans the cube and writes new reference values to <code>labValues.txt</code>.</p>
             </section>
 
             <section id="tuning-motors">
                 <h3>Tuning Motor Timing</h3>
-                <p>The speed and torque of the NEMA steppers are dictated by the sleep delay between magnet pulses in <code>RohsStepperMotor.java</code>. If your motors are skipping steps or stalling, adjust the nanosecond delay.</p>
+                <p>If your NEMA steppers skip steps, adjust the nanosecond delay in <code>RohsStepperMotor.java</code>:</p>
                 <pre><code>// In RohsStepperMotor.java -> doTurn() method
-LockSupport.parkNanos(1000000); // Wait 1 millisecond
+LockSupport.parkNanos(1000000); // 1 millisecond. Increase for torque.
 </code></pre>
-                <p>Increase this number (e.g., <code>1500000</code>) to slow the motors down and increase torque. Decrease it to speed up the physical solve time.</p>
             </section>
 
             <section id="contrib-solvers">
                 <h2>6. Contributing</h2>
-                <p>We welcome pull requests! The two most common areas for contribution are adding new mathematical solvers or supporting different motor drivers.</p>
-
                 <h3>Adding a New Solving Method</h3>
-                <p>Create a new class that implements <code>CubeSolvingMethod</code>. You must implement the <code>solve()</code> method, which takes the <code>char[6][3][3]</code> matrix and returns a <code>String[]</code> of moves.</p>
-                
-                <pre><code>public class MyCustomSolver implements CubeSolvingMethod {
+                <pre><code>public class CustomSolver implements CubeSolvingMethod {
     public String[] solve(char[][][] cubeColors) {
-        ArrayList&lt;String&gt; moves = new ArrayList&lt;&gt;();
         // Implement algorithm logic here
-        return moves.toArray(new String[0]);
+        return new String[]{"R", "U", "Ri"};
     }
 }
 </code></pre>
-                <p>Once created, instantiate it in the <code>Main.java</code> execution loop based on a new command line argument.</p>
             </section>
 
             <section id="contrib-hardware">
-                <h3>Supporting New Hardware</h3>
-                <p>If you are using a different motor shield, you can write a custom wrapper. Create a class that implements the <code>Motor</code> interface (implementing the <code>turn(double numRotations)</code> and <code>reset()</code> methods) and pass it into the <code>Robot</code> constructor in <code>Main.java</code>.</p>
+                <h3>Hardware Support</h3>
+                <p>To support different motor drivers, create a class implementing the <code>Motor</code> interface (<code>turn()</code> and <code>reset()</code>) and inject it into the <code>Robot</code> constructor in <code>Main.java</code>.</p>
             </section>
 
         </div>
