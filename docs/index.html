@@ -154,13 +154,13 @@
 
         <div class="section-title">Reference</div>
         <a href="#ref-architecture">System Architecture</a>
-        <a href="#ref-motor">MotorController</a>
-        <a href="#ref-camera">OpenCVCamera</a>
-        <a href="#ref-solver">Solver & Cube</a>
+        <a href="#ref-motor">MotorController (RohsStepper)</a>
+        <a href="#ref-camera">OpenCVCamera & Inspector</a>
+        <a href="#ref-cube-data">Cube Data Structure</a>
+        <a href="#ref-solver">Solver Algorithms</a>
 
         <div class="section-title">Usage</div>
         <a href="#usage-cli">Command Line Basics</a>
-        <a href="#usage-config">Configuration</a>
 
         <div class="section-title">Tuning</div>
         <a href="#tuning-vision">Vision Coordinates</a>
@@ -176,223 +176,189 @@
 
             <section id="introduction">
                 <h2>1. Introduction</h2>
-                <p>Welcome to the documentation for the <strong>CubeXell CubeSolver</strong>. This project is a complete hardware and software pipeline designed to autonomously scan, calculate, and physically solve a 3x3 Rubik's Cube.</p>
+                <p>Welcome to the documentation for the <strong>CubeXell CubeSolver</strong>. This project is a complete Java-based hardware and software pipeline designed to autonomously scan, calculate, and physically solve a 3x3 Rubik's Cube.</p>
                 
                 <h3>System Overview</h3>
                 <p>The system operates in a sequential pipeline:</p>
                 <ol>
-                    <li><strong>Camera & Vision:</strong> An overhead Raspberry Pi camera captures the cube's faces. OpenCV processes the images to extract sticker colors.</li>
-                    <li><strong>State Generation:</strong> The color data is mapped into a standard mathematical representation of a Rubik's Cube.</li>
-                    <li><strong>Solver Engine:</strong> An algorithm (e.g., Kociemba, CFOP, or Beginner) calculates the most efficient series of moves to solve the cube.</li>
-                    <li><strong>Motor Control:</strong> The solution string is translated into electronic signals sent to stepper motor drivers, physically rotating the cube's faces to the solved state.</li>
+                    <li><strong>Camera & Vision:</strong> An overhead Raspberry Pi camera captures the cube's faces. OpenCV (via JavaCPP) processes the images to extract sticker colors.</li>
+                    <li><strong>State Generation:</strong> The color data is mapped into a mathematical 3D array representation of a Rubik's Cube.</li>
+                    <li><strong>Solver Engine:</strong> A selected algorithm calculates the most efficient series of moves.</li>
+                    <li><strong>Motor Control:</strong> The solution is translated into electronic signals sent via Pi4J to stepper motor drivers, physically rotating the cube's faces.</li>
                 </ol>
 
                 <h3>Hardware Requirements</h3>
                 <ul>
                     <li>Raspberry Pi (3B+ or 4 recommended)</li>
-                    <li>Raspberry Pi Camera Module v2</li>
+                    <li>Raspberry Pi Camera Module</li>
                     <li>6x NEMA 17 Stepper Motors (one for each face)</li>
                     <li>6x A4988 or DRV8825 Motor Drivers</li>
-                    <li>Custom 3D printed frame and cube center-caps</li>
+                    <li>Custom frame and cube center-caps</li>
                 </ul>
             </section>
 
             <section id="installation">
                 <h2>2. Installation</h2>
-                <p>Follow these steps to set up the software environment on your Raspberry Pi.</p>
+                <p>Ensure your Raspberry Pi is running a recent OS version with Java installed and the camera interface enabled.</p>
 
-                <h3>Prerequisites</h3>
-                <p>Ensure your Raspberry Pi is running a recent version of Raspberry Pi OS with Python 3.9+ installed. You must also enable the camera interface via <code>sudo raspi-config</code>.</p>
+                <h3>Dependencies</h3>
+                <p>The project relies heavily on Maven/Gradle for dependency management. Ensure you have the following core libraries configured:</p>
+                <ul>
+                    <li><strong>Pi4J:</strong> For GPIO control and motor stepping.</li>
+                    <li><strong>OpenCV (JavaCPP):</strong> For image processing and color detection.</li>
+                    <li><strong>Kociemba Two-Phase Algorithm:</strong> For optimal solving.</li>
+                </ul>
 
-                <h3>Install Dependencies</h3>
-                <pre><code>sudo apt update
-sudo apt install python3-pip libopencv-dev python3-opencv
-
-# Clone the repository
-git clone https://github.com/randomcuber/cubesolverCampFull
+                <h3>Clone & Compile</h3>
+                <pre><code>git clone https://github.com/randomcuber/cubesolverCampFull.git
 cd cubesolverCampFull
-
-# Install Python requirements
-pip3 install -r requirements.txt</code></pre>
-
-                <h3>Verify Setup</h3>
-                <p>Run the test script to ensure the camera and GPIO pins are accessible:</p>
-                <pre><code>python3 main.py --test-hardware</code></pre>
+# Compile using your standard Java build tool (e.g., Maven/Gradle)
+# mvn clean install</code></pre>
             </section>
 
             <section id="ref-architecture">
                 <h2>3. Reference</h2>
-                <p>This section documents the core classes that make up the CubeSolver architecture. Understanding these classes is crucial if you intend to modify the motor logic or vision system.</p>
+                <p>This section documents the core Java classes that make up the CubeXell architecture. The system uses strong object-oriented principles, dividing responsibilities among distinct interfaces (<code>Motor</code>, <code>CubeColorInspector</code>, <code>CubeSolvingMethod</code>).</p>
+                
+                <h3>Abstract Class: Robot & RaspberryPiRobot</h3>
+                <p>The <code>Robot</code> class is the central hardware manager. It maintains references to six <code>Motor</code> objects (Up, Down, Right, Left, Front, Back). The physical implementation is handled by the <code>RaspberryPiRobot</code> subclass.</p>
+                <p><strong>Key Methods:</strong></p>
+                <ul>
+                    <li><code>U()</code>, <code>Ui()</code>, <code>U2()</code>...: Executes rotations on the respective face motors.</li>
+                    <li><code>resetMotors()</code>: Cuts power to all motor coils via a Shutdown Hook in <code>Main.java</code>. This ensures the motors don't forcefully hold their position, allowing the physical cube to "corner cut" and self-align.</li>
+                </ul>
             </section>
 
             <section id="ref-motor">
-                <h3>Class: MotorController</h3>
-                <p>The <code>MotorController</code> handles the GPIO signals sent to the stepper motor drivers. It translates standard cube notation (U, R', D2) into step and direction pulses.</p>
+                <h3>Class: RohsStepperMotor</h3>
+                <p>Implements the <code>Motor</code> interface using the <strong>Pi4J</strong> library to control NEMA-style stepper motors via 4-pin drivers.</p>
                 
                 <p><strong>Responsibilities:</strong></p>
                 <ul>
-                    <li>Initialize GPIO pins for STEP and DIR outputs.</li>
-                    <li>Control acceleration and deceleration of the stepper motors.</li>
-                    <li>Execute full sequence strings smoothly.</li>
+                    <li>Controls the 4 digital output pins (<code>in1</code>, <code>in2</code>, <code>in3</code>, <code>in4</code>).</li>
+                    <li>Manages the 8-step magnet firing sequence (half-stepping) for precise control: <code>{1,0,0,1}, {1,0,0,0}, {1,1,0,0}...</code>.</li>
                 </ul>
 
-                <pre><code>class MotorController:
-    def __init__(self, step_delay=0.001):
-        self.step_delay = step_delay
-        # GPIO Setup happens here...
+                <pre><code>public void doTurn(double stepsToTurn, boolean direction) {
+    // Iterates through the stepSequence array
+    // Uses LockSupport.parkNanos(1000000) for a 1-millisecond delay between steps
+}
 
-    def rotate_face(self, face_move):
-        """
-        Executes a single face rotation.
-        :param face_move: String (e.g., "R", "L'", "U2")
-        """
-        pass
-
-    def execute_sequence(self, moves_list):
-        """
-        Iterates over a list of moves and triggers motors sequentially.
-        """
-        for move in moves_list:
-            self.rotate_face(move)</code></pre>
+public void reset() {
+    // Sets all pins LOW to allow corner cutting
+    in1.low(); in2.low(); in3.low(); in4.low();
+}</code></pre>
             </section>
 
             <section id="ref-camera">
-                <h3>Class: OpenCVRaspberryPiCamera</h3>
-                <p>This class is responsible for interacting with the PiCamera, capturing frames, and using computer vision to determine the color of the 54 stickers on the cube.</p>
+                <h3>Class: OpenCvRaspberryPiCamera</h3>
+                <p>Implements the <code>CubeColorInspector</code> interface. This class uses <code>org.bytedeco.opencv</code> to capture frames (default 3280x2464) and extract sticker colors using LAB/HSV color space bounds.</p>
 
-                <p><strong>Methods:</strong></p>
+                <p><strong>Mechanics:</strong></p>
+                <p>The robot physically rotates the cube to expose different faces to the top-mounted camera. It samples specific rectangular pixel areas to detect the color of each sticker. It also supports an <code>autoTune</code> mode to generate dynamic reference values.</p>
+
+                <pre><code>public char[][][] inspect() {
+    // Rotates the cube, captures an image, inspects the face, and returns the 3D char array
+    captureImage();
+    char[][] backFace = inspectBackFace('B');
+    // ... continues for all faces ...
+    return cubeColors;
+}</code></pre>
+            </section>
+
+            <section id="ref-cube-data">
+                <h3>Data Structure: Cube & CubeConstants</h3>
+                <p>The <code>Cube</code> class holds the virtual state of the puzzle as a highly efficient 3D character array: <code>char[6][3][3]</code>.</p>
+                
+                <p><strong>Face Indexing (from <code>CubeConstants.java</code>):</strong></p>
                 <ul>
-                    <li><code>capture_face(face_name)</code>: Takes a picture of the current top-facing side.</li>
-                    <li><code>extract_colors(frame)</code>: Uses HSV color bounding to determine sticker colors at predefined coordinates.</li>
+                    <li><code>0</code>: Left Face (Orange)</li>
+                    <li><code>1</code>: Back Face (Blue)</li>
+                    <li><code>2</code>: Up Face (White)</li>
+                    <li><code>3</code>: Front Face (Green)</li>
+                    <li><code>4</code>: Right Face (Red)</li>
+                    <li><code>5</code>: Down Face (Yellow)</li>
                 </ul>
 
-                <pre><code>class OpenCVRaspberryPiCamera:
-    def __init__(self):
-        self.camera = cv2.VideoCapture(0)
-        # BGR to HSV color bounds defined here
-
-    def scan_cube(self):
-        """
-        Returns a 54-character string representing the cube state.
-        Format: UUUUUUUUURRRRRRRRRFFFFFFFFFDDDDDDDDDLLLLLLLLLBBBBBBBBB
-        """
-        pass</code></pre>
+                <p><strong>Move Optimization:</strong></p>
+                <p>The <code>Cube</code> class contains a <code>simplifySolution(String[] solution)</code> method. It loops through generated solutions and mathematically combines adjacent redundant moves (e.g., <code>U</code> + <code>U</code> &rarr; <code>U2</code>, or <code>R</code> + <code>Ri</code> &rarr; <em>cancels out</em>).</p>
             </section>
 
             <section id="ref-solver">
-                <h3>Classes: Solver & Cube</h3>
-                <p>The <code>Cube</code> class maintains the virtual state of the puzzle. The <code>Solver</code> class takes a <code>Cube</code> instance and returns an array of moves.</p>
-                <pre><code>from core import Cube, Solver
-
-my_cube = Cube(state_string="DUUBULDBFRBFRRULLLBRDFFFBLURDBFDFDRFRULCDUUB... ")
-my_solver = Solver(method="kociemba")
-
-solution = my_solver.solve(my_cube)
-print(solution) # Output: ["R", "U", "R'", "F2", "D'"]</code></pre>
+                <h3>Solver Algorithms</h3>
+                <p>The system defines a <code>CubeSolvingMethod</code> interface with a single method: <code>String[] solve(char[][][] cubeColors)</code>. Three implementations are provided:</p>
+                
+                <ul>
+                    <li><strong><code>BeginnerMethod</code>:</strong> A layer-by-layer deterministic approach. It locates specific pieces using coordinate searches and applies hardcoded algorithms sequentially.</li>
+                    <li><strong><code>OldPochmannMethod</code>:</strong> A blindfolded solving technique executing targeted edge/corner swaps (e.g., T-Perms).</li>
+                    <li><strong><code>KociembaAlgorithm</code>:</strong> Maps the 3D char array into a 54-character string and feeds it to <code>Search.solution()</code> to find the mathematical optimal sequence.</li>
+                </ul>
             </section>
 
             <section id="usage-cli">
                 <h2>4. Usage</h2>
-                <p>The primary way to interact with the system is through the command line using <code>main.py</code>.</p>
-
-                <h3>Running a Full Solve Pipeline</h3>
-                <p>To run the default sequence (Scan -> Calculate -> Solve physically):</p>
-                <pre><code>python3 main.py --run</code></pre>
+                <p>The primary way to interact with the system is by passing arguments to <code>Main.java</code>.</p>
 
                 <h3>Command Line Arguments</h3>
-                <p>You can customize the execution using flags:</p>
+                <p>The program accepts up to three arguments in the following format:</p>
+                <pre><code>java -jar cubesolver.jar [Method] [Scramble] [AutoTune]</code></pre>
+                
                 <ul>
-                    <li><code>--method [name]</code>: Choose the solving algorithm (<code>kociemba</code>, <code>cfop</code>, <code>beginner</code>).</li>
-                    <li><code>--dry-run</code>: Scans and calculates the solution, but does <strong>not</strong> engage the motors.</li>
-                    <li><code>--scramble [length]</code>: Instructs the motors to randomly scramble the cube before solving.</li>
+                    <li><strong>Argument 1 (Method):</strong> <code>B</code> (Beginner - Default), <code>O</code> (Old Pochmann), or any other key for Kociemba.</li>
+                    <li><strong>Argument 2 (Scramble):</strong> <code>Y</code> physically scrambles the cube via <code>CubeScrambler</code> first (Default). <code>N</code> inspects the current physical state using the camera.</li>
+                    <li><strong>Argument 3 (AutoTune):</strong> <code>Y</code> enables the auto-tune flag for the OpenCV camera to recalibrate colors.</li>
                 </ul>
-                <pre><code>python3 main.py --run --method cfop --dry-run</code></pre>
-            </section>
-
-            <section id="usage-config">
-                <h3>Configuration File</h3>
-                <p>Persistent settings are stored in <code>config.json</code> in the root directory. You can edit this file to change default behaviors without using command line flags.</p>
-                <pre><code>{
-    "default_solver": "kociemba",
-    "motor_speed_rpm": 120,
-    "camera_resolution": [640, 480],
-    "log_level": "INFO"
-}</code></pre>
+                <pre><code># Example: Use Kociemba, DO NOT scramble first, enable AutoTune
+java -jar cubesolver.jar K N Y</code></pre>
             </section>
 
             <section id="tuning-vision">
                 <h2>5. Tuning</h2>
-                <p>Because lighting and hardware builds vary, the vision and motor systems must be tuned to your specific physical setup.</p>
+                <p>Hardware variances and lighting conditions require the vision and motor delays to be tuned.</p>
 
                 <h3>Tuning Vision Coordinates</h3>
-                <p>The camera needs to know exactly which pixels to look at to determine a sticker's color. These are defined as an array of (x, y) coordinates in the <code>OpenCVRaspberryPiCamera</code> class.</p>
+                <p>The <code>OpenCvRaspberryPiCamera</code> uses hardcoded coordinate grids to locate stickers. If your camera is mounted slightly differently, adjust the global offset variables at the top of the class:</p>
                 
-                <p>To tune these, run the calibration tool:</p>
-                <pre><code>python3 main.py --calibrate-vision</code></pre>
-                
-                <p>This will open a GUI window showing the live camera feed. You will see green circles drawn on the frame using OpenCV.</p>
-                
-                <pre><code># Inside OpenCVRaspberryPiCamera.py
-# Adjust these coordinates to match the center of your cube's stickers in the frame
-self.sticker_coords = [
-    (120, 120), (320, 120), (520, 120), # Top row
-    (120, 240), (320, 240), (520, 240), # Middle row
-    (120, 360), (320, 360), (520, 360)  # Bottom row
-]
+                <pre><code>// In OpenCvRaspberryPiCamera.java
+int offsetX = -200;
+int offsetY = -190;
 
-# Drawing logic for visual debugging
-for (x, y) in self.sticker_coords:
-    cv2.circle(frame, (x, y), radius=5, color=(0, 255, 0), thickness=-1)
+// Example of how offsets are applied internally:
+findColor(970 + offsetX, 700 + offsetY, 90, 45);
 </code></pre>
-                <p>If the circles do not land perfectly in the center of your physical cube's stickers, adjust the integers in <code>self.sticker_coords</code> until they do.</p>
+                <p>By tweaking <code>offsetX</code> and <code>offsetY</code>, you shift the entire sampling grid left/right or up/down to align with your camera's field of view.</p>
             </section>
 
             <section id="tuning-motors">
                 <h3>Tuning Motor Timing</h3>
-                <p>If your stepper motors are skipping steps or binding, you may need to adjust the delay between steps. Lower delays mean faster turns, but less torque. Open <code>motor_config.py</code> and adjust the <code>STEP_DELAY</code>.</p>
-                <pre><code># Increase this value if motors skip steps (e.g. 0.002)
-# Decrease for faster solves (e.g. 0.0008)
-STEP_DELAY = 0.001 
+                <p>The speed and torque of the NEMA steppers are dictated by the sleep delay between magnet pulses in <code>RohsStepperMotor.java</code>. If your motors are skipping steps or stalling, adjust the nanosecond delay.</p>
+                <pre><code>// In RohsStepperMotor.java -> doTurn() method
+LockSupport.parkNanos(1000000); // Wait 1 millisecond
 </code></pre>
+                <p>Increase this number (e.g., <code>1500000</code>) to slow the motors down and increase torque. Decrease it to speed up the physical solve time.</p>
             </section>
 
             <section id="contrib-solvers">
                 <h2>6. Contributing</h2>
-                <p>We welcome pull requests! The two most common areas for contribution are adding new mathematical solvers or adding support for different motor driver boards.</p>
+                <p>We welcome pull requests! The two most common areas for contribution are adding new mathematical solvers or supporting different motor drivers.</p>
 
                 <h3>Adding a New Solving Method</h3>
-                <p>To add a custom solver, create a new class in the <code>solvers/</code> directory that inherits from <code>BaseSolver</code>. You must implement the <code>solve()</code> method.</p>
+                <p>Create a new class that implements <code>CubeSolvingMethod</code>. You must implement the <code>solve()</code> method, which takes the <code>char[6][3][3]</code> matrix and returns a <code>String[]</code> of moves.</p>
                 
-                <pre><code>from core.base_solver import BaseSolver
-
-class RouxSolver(BaseSolver):
-    def __init__(self):
-        super().__init__(name="roux")
-
-    def solve(self, cube_state_string):
-        """
-        Input: 54-char string representing the cube.
-        Output: List of strings representing moves.
-        """
-        solution_moves = []
-        # Implement Roux logic here
-        return solution_moves
+                <pre><code>public class MyCustomSolver implements CubeSolvingMethod {
+    public String[] solve(char[][][] cubeColors) {
+        ArrayList&lt;String&gt; moves = new ArrayList&lt;&gt;();
+        // Implement algorithm logic here
+        return moves.toArray(new String[0]);
+    }
+}
 </code></pre>
-                <p>Once created, register it in the <code>solver_factory.py</code> file so it can be called via the command line.</p>
+                <p>Once created, instantiate it in the <code>Main.java</code> execution loop based on a new command line argument.</p>
             </section>
 
             <section id="contrib-hardware">
                 <h3>Supporting New Hardware</h3>
-                <p>If you are using an Arduino or a different motor shield instead of raw GPIO pins, you can write a custom wrapper. Create a class that implements the <code>MotorController</code> interface (specifically the <code>rotate_face</code> method) and submit it via a Pull Request.</p>
-                
-                <p><strong>Steps to Contribute:</strong></p>
-                <ol>
-                    <li>Fork the repository.</li>
-                    <li>Create a feature branch (<code>git checkout -b feature/arduino-support</code>).</li>
-                    <li>Commit your changes (<code>git commit -m "Add Arduino serial motor controller"</code>).</li>
-                    <li>Push to the branch (<code>git push origin feature/arduino-support</code>).</li>
-                    <li>Open a Pull Request on GitHub.</li>
-                </ol>
+                <p>If you are using a different motor shield, you can write a custom wrapper. Create a class that implements the <code>Motor</code> interface (implementing the <code>turn(double numRotations)</code> and <code>reset()</code> methods) and pass it into the <code>Robot</code> constructor in <code>Main.java</code>.</p>
             </section>
 
         </div>
