@@ -1,266 +1,449 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>CubeXell CubeSolver Docs</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta charset="UTF-8">
+<title>CubeSolver Documentation</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-    <style>
-        :root {
-            --bg: #ffffff;
-            --sidebar: #fafafa;
-            --border: #e5e5e5;
-            --text: #111111;
-            --muted: #6b7280;
-            --hover: #f3f4f6;
-            --accent: #000000;
-        }
+<style>
+:root {
+    --bg: #ffffff;
+    --sidebar: #fafafa;
+    --border: #e5e5e5;
+    --text: #111111;
+    --muted: #6b7280;
+    --hover: #f3f4f6;
+    --code-bg: #0f172a;
+}
 
-        * { box-sizing: border-box; }
+* { box-sizing: border-box; }
 
-        body {
-            margin: 0;
-            font-family: 'Inter', system-ui, -apple-system, sans-serif;
-            background: var(--bg);
-            color: var(--text);
-            display: flex;
-            height: 100vh;
-        }
+html { scroll-behavior: smooth; }
 
-        .sidebar {
-            width: 280px;
-            background: var(--sidebar);
-            border-right: 1px solid var(--border);
-            padding: 28px 22px;
-            overflow-y: auto;
-        }
+body {
+    margin: 0;
+    font-family: 'Inter', system-ui, sans-serif;
+    display: flex;
+    height: 100vh;
+    background: var(--bg);
+    color: var(--text);
+}
 
-        .logo {
-            font-size: 18px;
-            font-weight: 600;
-            margin-bottom: 28px;
-        }
+.sidebar {
+    width: 300px;
+    background: var(--sidebar);
+    border-right: 1px solid var(--border);
+    padding: 24px 18px;
+    overflow-y: auto;
+}
 
-        .section-title {
-            font-size: 12px;
-            font-weight: 600;
-            color: var(--muted);
-            margin-top: 22px;
-            margin-bottom: 8px;
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-        }
+.logo {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 16px;
+}
 
-        .nav-link {
-            display: block;
-            padding: 7px 10px;
-            border-radius: 8px;
-            color: var(--text);
-            text-decoration: none;
-            font-size: 14px;
-            transition: background 0.15s ease;
-        }
+.search-box {
+    width: 100%;
+    padding: 8px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    margin-bottom: 16px;
+}
 
-        .nav-link:hover {
-            background: var(--hover);
-        }
+.section-title {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--muted);
+    margin-top: 18px;
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
 
-        .content {
-            flex: 1;
-            padding: 48px 56px;
-            overflow-y: auto;
-            max-width: 980px;
-        }
+.nav-link {
+    display: block;
+    padding: 7px 10px;
+    border-radius: 8px;
+    text-decoration: none;
+    color: var(--text);
+    font-size: 14px;
+}
 
-        section {
-            margin-bottom: 60px;
-        }
+.nav-link:hover {
+    background: var(--hover);
+}
 
-        h1 {
-            font-size: 34px;
-            margin-top: 0;
-            margin-bottom: 16px;
-        }
+.nav-link.active {
+    background: black;
+    color: white;
+}
 
-        h2 {
-            font-size: 24px;
-            margin-top: 0;
-            margin-bottom: 12px;
-        }
+.content {
+    flex: 1;
+    padding: 48px 56px;
+    overflow-y: auto;
+    max-width: 900px;
+}
 
-        p {
-            font-size: 15px;
-            line-height: 1.6;
-            margin-bottom: 16px;
-        }
+.toc {
+    width: 220px;
+    border-left: 1px solid var(--border);
+    padding: 24px 16px;
+    font-size: 13px;
+    overflow-y: auto;
+}
 
-        code {
-            background: #f3f4f6;
-            padding: 3px 6px;
-            border-radius: 6px;
-            font-size: 14px;
-        }
+.toc a {
+    display: block;
+    margin-bottom: 6px;
+    text-decoration: none;
+    color: var(--muted);
+}
 
-        pre {
-            background: #0f172a;
-            color: #e5e7eb;
-            padding: 18px;
-            border-radius: 12px;
-            overflow-x: auto;
-            font-size: 14px;
-            line-height: 1.5;
-        }
+.toc a:hover {
+    color: black;
+}
 
-        html {
-            scroll-behavior: smooth;
-        }
-    </style>
+section { margin-bottom: 64px; }
+
+h1 { font-size: 36px; margin-top: 0; }
+
+h2 { font-size: 26px; margin-top: 32px; }
+
+h3 { font-size: 20px; margin-top: 24px; }
+
+p { line-height: 1.7; font-size: 15px; }
+
+code {
+    background: #f3f4f6;
+    padding: 3px 6px;
+    border-radius: 6px;
+}
+
+pre {
+    background: var(--code-bg);
+    color: #e5e7eb;
+    padding: 16px;
+    border-radius: 10px;
+    overflow-x: auto;
+    font-size: 14px;
+}
+
+details {
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px;
+    margin-top: 12px;
+}
+
+summary {
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.diagram {
+    border: 1px dashed var(--border);
+    padding: 16px;
+    border-radius: 10px;
+    margin-top: 12px;
+    font-family: monospace;
+}
+
+</style>
 </head>
 
 <body>
 
 <div class="sidebar">
 
-    <div class="logo">CubeSolver</div>
+<div class="logo">CubeSolver Docs</div>
 
-    <div class="section-title">Getting Started</div>
+<input class="search-box" placeholder="Search..." onkeyup="searchDocs(this.value)">
 
-    <a class="nav-link" href="#introduction">Introduction</a>
-    <a class="nav-link" href="#installation">Installation</a>
-    <a class="nav-link" href="#quickstart">Quick Start</a>
+<div class="section-title">Sections</div>
 
-    <div class="section-title">Core Concepts</div>
-
-    <a class="nav-link" href="#cube-state">Cube State</a>
-    <a class="nav-link" href="#moves">Moves</a>
-    <a class="nav-link" href="#solver-algorithm">Solver Algorithm</a>
-
-    <div class="section-title">Usage</div>
-
-    <a class="nav-link" href="#basic-usage">Basic Usage</a>
-    <a class="nav-link" href="#advanced-usage">Advanced Usage</a>
-    <a class="nav-link" href="#api">API Reference</a>
-
-    <div class="section-title">Development</div>
-
-    <a class="nav-link" href="#architecture">Architecture</a>
-    <a class="nav-link" href="#testing">Testing</a>
-    <a class="nav-link" href="#contributing">Contributing</a>
+<a class="nav-link" href="#introduction">Introduction</a>
+<a class="nav-link" href="#installation">Installation</a>
+<a class="nav-link" href="#reference">Reference</a>
+<a class="nav-link" href="#usage">Usage</a>
+<a class="nav-link" href="#tuning">Tuning</a>
+<a class="nav-link" href="#contributing">Contributing</a>
 
 </div>
 
-<div class="content">
+<div class="content" id="content">
 
 <section id="introduction">
-    <h1>Introduction</h1>
-    <p>
-        CubeSolver is a programmable Rubik's Cube solving engine designed for
-        speed, clarity, and extensibility.
-    </p>
+
+<h1>Introduction</h1>
+
+<p>
+CubeSolver is an integrated robotics system designed to automatically solve
+Rubik's Cubes using computer vision and precise motor control. The software
+runs on a Raspberry Pi and interfaces with a camera and stepper motors to
+observe the cube, compute a solving sequence, and physically execute moves.
+</p>
+
+<p>
+The system is designed to be modular and extensible. Each component — vision,
+solver logic, and motor control — is implemented as a separate class so that
+new solving methods, hardware configurations, or camera systems can be added
+without rewriting the entire system.
+</p>
+
+<h2>System Pipeline</h2>
+
+<div class="diagram">
+Camera → Vision → Cube State → Solver → Motor Controller → Physical Movement
+</div>
+
+<p>
+Each stage in the pipeline transforms the cube state into a new representation.
+The camera captures images, the vision system interprets colors, the solver
+computes moves, and the motor controller executes those moves.
+</p>
+
 </section>
 
 <section id="installation">
-    <h2>Installation</h2>
 
-    <pre>
-# Clone repository
+<h1>Installation</h1>
 
+<p>
+This section explains how to install and configure the CubeSolver system on a
+Raspberry Pi. These steps assume basic familiarity with Linux command line
+usage and Git.
+</p>
+
+<h2>Clone Repository</h2>
+
+<pre>
 git clone https://github.com/randomcuber/cubesolverCampFull
-
 cd cubesolverCampFull
-    </pre>
+</pre>
+
+<h2>Install Dependencies</h2>
+
+<pre>
+pip install opencv-python
+pip install numpy
+</pre>
+
+<p>
+OpenCV is required for computer vision operations such as color detection and
+image capture. NumPy is used for numerical processing and matrix operations
+within the solver.
+</p>
+
+<h2>Run the Program</h2>
+
+<pre>
+python main.py
+</pre>
 
 </section>
 
-<section id="quickstart">
-    <h2>Quick Start</h2>
+<section id="reference">
 
-    <pre>
-Cube cube = new Cube();
+<h1>Reference</h1>
 
-cube.scramble();
+<p>
+The Reference section documents the internal architecture of the CubeSolver
+system. Each major class is explained in detail, including responsibilities,
+methods, and how the components interact with each other.
+</p>
 
-Solver solver = new Solver();
+<details open>
 
-String solution = solver.solve(cube);
-    </pre>
+<summary>MotorController Class</summary>
+
+<p>
+The MotorController class is responsible for controlling the motors that rotate
+cube faces. It converts logical moves (such as R or U') into electrical signals
+that drive stepper motors.
+</p>
+
+<pre>
+controller = MotorController()
+controller.rotate_face("R")
+</pre>
+
+<p>
+Internally, the controller calculates step counts, direction, and timing to
+ensure accurate and safe movement of the cube.
+</p>
+
+</details>
+
+<details>
+
+<summary>OpenCVRaspberryPiCamera Class</summary>
+
+<p>
+This class captures images from the Raspberry Pi camera and detects cube colors
+using OpenCV. It converts raw camera frames into structured cube state data
+that can be passed to the solver.
+</p>
+
+<pre>
+camera = OpenCVRaspberryPiCamera()
+state = camera.scan_cube()
+</pre>
+
+</details>
 
 </section>
 
-<section id="cube-state">
-    <h2>Cube State</h2>
-    <p>
-        The cube state represents the positions and orientations of all pieces.
-    </p>
+<section id="usage">
+
+<h1>Usage</h1>
+
+<p>
+This section explains how to operate the system, configure solver behavior, and
+run commands from the terminal.
+</p>
+
+<h2>Navigate to Project</h2>
+
+<pre>
+cd cubesolverCampFull
+</pre>
+
+<h2>Run Program</h2>
+
+<pre>
+python main.py
+</pre>
+
+<h2>Select Solving Method</h2>
+
+<pre>
+solver = Solver(method="CFOP")
+</pre>
+
+<p>
+Different solving methods can be implemented and selected dynamically using the
+method parameter. This allows experimentation with different solving
+algorithms.
+</p>
+
 </section>
 
-<section id="moves">
-    <h2>Moves</h2>
-    <p>
-        Moves follow standard cube notation such as R, U, F, L, D, and B.
-    </p>
-</section>
+<section id="tuning">
 
-<section id="solver-algorithm">
-    <h2>Solver Algorithm</h2>
-    <p>
-        The solver computes sequences of legal moves that transform a scrambled
-        cube into the solved state.
-    </p>
-</section>
+<h1>Tuning</h1>
 
-<section id="basic-usage">
-    <h2>Basic Usage</h2>
+<p>
+Tuning is required to ensure accurate cube detection and reliable motor
+operation. Environmental factors such as lighting, camera angle, and cube
+position can affect detection accuracy.
+</p>
 
-    <pre>
-Cube cube = new Cube();
+<h2>Coordinate Tuning</h2>
 
-cube.apply("R U R'");
-    </pre>
+<pre>
+self.coordinates = [
+    (120, 80),
+    (200, 80),
+    (280, 80)
+]
+</pre>
 
-</section>
+<p>
+Each coordinate represents the center of a cube sticker. Adjusting these values
+allows the camera to correctly sample colors from the cube.
+</p>
 
-<section id="advanced-usage">
-    <h2>Advanced Usage</h2>
-    <p>
-        Advanced usage includes custom scrambles, performance tuning, and
-        debugging solver states.
-    </p>
-</section>
+<h2>Calibration Command</h2>
 
-<section id="api">
-    <h2>API Reference</h2>
-    <p>
-        This section documents public classes and methods available to users.
-    </p>
-</section>
+<pre>
+python main.py --calibrate
+</pre>
 
-<section id="architecture">
-    <h2>Architecture</h2>
-    <p>
-        The system is divided into cube representation, move logic, and solver
-        engine components.
-    </p>
-</section>
-
-<section id="testing">
-    <h2>Testing</h2>
-    <p>
-        Unit tests verify correctness of cube operations and solver behavior.
-    </p>
 </section>
 
 <section id="contributing">
-    <h2>Contributing</h2>
-    <p>
-        Contributions are welcome. Follow coding standards and submit pull
-        requests with clear documentation.
-    </p>
+
+<h1>Contributing</h1>
+
+<p>
+Developers can extend the CubeSolver system by adding new solving algorithms or
+supporting new hardware configurations.
+</p>
+
+<h2>Add New Solver</h2>
+
+<pre>
+class MySolver:
+    def solve(self, cube):
+        return ["R", "U", "R'"]
+</pre>
+
+<p>
+New solver implementations should follow the same interface as existing solver
+classes so that they can be integrated without modifying other components.
+</p>
+
 </section>
 
 </div>
+
+<div class="toc">
+
+<strong>On this page</strong>
+
+<a href="#introduction">Introduction</a>
+<a href="#installation">Installation</a>
+<a href="#reference">Reference</a>
+<a href="#usage">Usage</a>
+<a href="#tuning">Tuning</a>
+<a href="#contributing">Contributing</a>
+
+</div>
+
+<script>
+
+function searchDocs(query) {
+    query = query.toLowerCase();
+
+    const sections = document.querySelectorAll("section");
+
+    sections.forEach(section => {
+        if (section.innerText.toLowerCase().includes(query))
+            section.style.display = "block";
+        else
+            section.style.display = "none";
+    });
+}
+
+const links = document.querySelectorAll('.nav-link');
+const sections = document.querySelectorAll('section');
+
+const observer = new IntersectionObserver(entries => {
+
+    entries.forEach(entry => {
+
+        if (entry.isIntersecting) {
+
+            links.forEach(link => link.classList.remove('active'));
+
+            const id = entry.target.getAttribute('id');
+
+            const activeLink = document.querySelector(`.nav-link[href="#${id}"]`);
+
+            if (activeLink) activeLink.classList.add('active');
+        }
+
+    });
+
+}, { threshold: 0.4 });
+
+sections.forEach(section => observer.observe(section));
+
+</script>
 
 </body>
 </html>
