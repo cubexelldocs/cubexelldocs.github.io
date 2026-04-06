@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,7 +5,6 @@
     <title>CubeXell CubeSolver Docs</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <!-- Modern font -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
     <style>
@@ -20,9 +18,7 @@
             --accent: #000000;
         }
 
-        * {
-            box-sizing: border-box;
-        }
+        * { box-sizing: border-box; }
 
         body {
             margin: 0;
@@ -32,8 +28,6 @@
             display: flex;
             height: 100vh;
         }
-
-        /* Sidebar */
 
         .sidebar {
             width: 280px;
@@ -47,7 +41,6 @@
             font-size: 18px;
             font-weight: 600;
             margin-bottom: 28px;
-            letter-spacing: -0.2px;
         }
 
         .section-title {
@@ -74,14 +67,6 @@
             background: var(--hover);
         }
 
-        .nav-link.active {
-            background: var(--accent);
-            color: white;
-            font-weight: 500;
-        }
-
-        /* Content */
-
         .content {
             flex: 1;
             padding: 48px 56px;
@@ -89,43 +74,27 @@
             max-width: 980px;
         }
 
+        section {
+            margin-bottom: 60px;
+        }
+
         h1 {
             font-size: 34px;
             margin-top: 0;
             margin-bottom: 16px;
-            letter-spacing: -0.5px;
         }
 
         h2 {
-            font-size: 22px;
-            margin-top: 40px;
+            font-size: 24px;
+            margin-top: 0;
             margin-bottom: 12px;
-            letter-spacing: -0.3px;
         }
 
         p {
             font-size: 15px;
             line-height: 1.6;
-            color: #1f2937;
             margin-bottom: 16px;
         }
-
-        ul {
-            padding-left: 20px;
-        }
-
-        li {
-            margin-bottom: 8px;
-            font-size: 15px;
-        }
-
-        hr {
-            border: none;
-            border-top: 1px solid var(--border);
-            margin: 36px 0;
-        }
-
-        /* Code blocks */
 
         code {
             background: #f3f4f6;
@@ -142,132 +111,71 @@
             overflow-x: auto;
             font-size: 14px;
             line-height: 1.5;
-            margin-top: 16px;
         }
 
-        /* Top header (mobile friendly) */
-
-        .mobile-header {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 56px;
-            background: white;
-            border-bottom: 1px solid var(--border);
-            align-items: center;
-            padding: 0 16px;
-            font-weight: 600;
-            z-index: 1000;
+        html {
+            scroll-behavior: smooth;
         }
-
-        /* Responsive */
-
-        @media (max-width: 900px) {
-
-            body {
-                flex-direction: column;
-            }
-
-            .sidebar {
-                position: fixed;
-                top: 56px;
-                bottom: 0;
-                left: 0;
-                width: 260px;
-                transform: translateX(-100%);
-                transition: transform 0.2s ease;
-                z-index: 999;
-            }
-
-            .sidebar.open {
-                transform: translateX(0);
-            }
-
-            .mobile-header {
-                display: flex;
-            }
-
-            .content {
-                padding: 80px 24px 40px 24px;
-            }
-        }
-
-        .menu-button {
-            cursor: pointer;
-            margin-right: 12px;
-            font-size: 20px;
-        }
-
     </style>
 </head>
 
 <body>
 
-<div class="mobile-header">
-    <div class="menu-button" onclick="toggleSidebar()">☰</div>
-    CubeSolver Docs
-</div>
-
-<div class="sidebar" id="sidebar">
+<div class="sidebar">
 
     <div class="logo">CubeSolver</div>
 
     <div class="section-title">Getting Started</div>
 
-    <a class="nav-link active" href="index.html">Introduction</a>
-    <a class="nav-link" href="installation.html">Installation</a>
-    <a class="nav-link" href="quickstart.html">Quick Start</a>
+    <a class="nav-link" href="#introduction">Introduction</a>
+    <a class="nav-link" href="#installation">Installation</a>
+    <a class="nav-link" href="#quickstart">Quick Start</a>
 
     <div class="section-title">Core Concepts</div>
 
-    <a class="nav-link" href="cube-state.html">Cube State</a>
-    <a class="nav-link" href="moves.html">Moves</a>
-    <a class="nav-link" href="solver-algorithm.html">Solver Algorithm</a>
+    <a class="nav-link" href="#cube-state">Cube State</a>
+    <a class="nav-link" href="#moves">Moves</a>
+    <a class="nav-link" href="#solver-algorithm">Solver Algorithm</a>
 
     <div class="section-title">Usage</div>
 
-    <a class="nav-link" href="basic-usage.html">Basic Usage</a>
-    <a class="nav-link" href="advanced-usage.html">Advanced Usage</a>
-    <a class="nav-link" href="api.html">API Reference</a>
+    <a class="nav-link" href="#basic-usage">Basic Usage</a>
+    <a class="nav-link" href="#advanced-usage">Advanced Usage</a>
+    <a class="nav-link" href="#api">API Reference</a>
 
     <div class="section-title">Development</div>
 
-    <a class="nav-link" href="architecture.html">Architecture</a>
-    <a class="nav-link" href="testing.html">Testing</a>
-    <a class="nav-link" href="contributing.html">Contributing</a>
+    <a class="nav-link" href="#architecture">Architecture</a>
+    <a class="nav-link" href="#testing">Testing</a>
+    <a class="nav-link" href="#contributing">Contributing</a>
 
 </div>
 
 <div class="content">
 
+<section id="introduction">
     <h1>Introduction</h1>
-
     <p>
-        Welcome to the CubeXell CubeSolver documentation.
-        This documentation is designed to be clear, fast to navigate,
-        and easy to extend as the project grows.
+        CubeSolver is a programmable Rubik's Cube solving engine designed for
+        speed, clarity, and extensibility.
     </p>
+</section>
 
-    <hr>
+<section id="installation">
+    <h2>Installation</h2>
 
-    <h2>What is CubeSolver?</h2>
+    <pre>
+# Clone repository
 
-    <p>
-        CubeSolver is a programmable Rubik's Cube solving engine that can:
-    </p>
+git clone https://github.com/randomcuber/cubesolverCampFull
 
-    <ul>
-        <li>Represent cube states</li>
-        <li>Apply legal cube moves</li>
-        <li>Scramble cubes</li>
-        <li>Compute solving sequences</li>
-    </ul>
+cd cubesolverCampFull
+    </pre>
 
-    <hr>
+</section>
 
-    <h2>Example</h2>
+<section id="quickstart">
+    <h2>Quick Start</h2>
 
     <pre>
 Cube cube = new Cube();
@@ -277,28 +185,82 @@ cube.scramble();
 Solver solver = new Solver();
 
 String solution = solver.solve(cube);
-
-System.out.println(solution);
     </pre>
 
-    <hr>
+</section>
 
-    <h2>Design Goals</h2>
+<section id="cube-state">
+    <h2>Cube State</h2>
+    <p>
+        The cube state represents the positions and orientations of all pieces.
+    </p>
+</section>
 
-    <ul>
-        <li>Readable documentation</li>
-        <li>Fast navigation</li>
-        <li>Minimal visual clutter</li>
-        <li>Easy scalability</li>
-    </ul>
+<section id="moves">
+    <h2>Moves</h2>
+    <p>
+        Moves follow standard cube notation such as R, U, F, L, D, and B.
+    </p>
+</section>
+
+<section id="solver-algorithm">
+    <h2>Solver Algorithm</h2>
+    <p>
+        The solver computes sequences of legal moves that transform a scrambled
+        cube into the solved state.
+    </p>
+</section>
+
+<section id="basic-usage">
+    <h2>Basic Usage</h2>
+
+    <pre>
+Cube cube = new Cube();
+
+cube.apply("R U R'");
+    </pre>
+
+</section>
+
+<section id="advanced-usage">
+    <h2>Advanced Usage</h2>
+    <p>
+        Advanced usage includes custom scrambles, performance tuning, and
+        debugging solver states.
+    </p>
+</section>
+
+<section id="api">
+    <h2>API Reference</h2>
+    <p>
+        This section documents public classes and methods available to users.
+    </p>
+</section>
+
+<section id="architecture">
+    <h2>Architecture</h2>
+    <p>
+        The system is divided into cube representation, move logic, and solver
+        engine components.
+    </p>
+</section>
+
+<section id="testing">
+    <h2>Testing</h2>
+    <p>
+        Unit tests verify correctness of cube operations and solver behavior.
+    </p>
+</section>
+
+<section id="contributing">
+    <h2>Contributing</h2>
+    <p>
+        Contributions are welcome. Follow coding standards and submit pull
+        requests with clear documentation.
+    </p>
+</section>
 
 </div>
-
-<script>
-    function toggleSidebar() {
-        document.getElementById("sidebar").classList.toggle("open");
-    }
-</script>
 
 </body>
 </html>
