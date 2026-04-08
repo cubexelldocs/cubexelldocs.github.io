@@ -72,6 +72,12 @@
             color: var(--link-hover);
             font-weight: 500;
         }
+        
+        /* Active Link Styling */
+        .sidebar a.active {
+            color: var(--text-color);
+            font-weight: bold;
+        }
 
         /* Main Content Area */
         .content {
@@ -394,5 +400,46 @@ LockSupport.parkNanos(<span class="num">1000000</span>); <span class="cmt">// 1 
         </div>
     </div>
 
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const contentContainer = document.querySelector('.content');
+            const sections = document.querySelectorAll('section');
+            const navLinks = document.querySelectorAll('.sidebar a');
+
+            function updateActiveSection() {
+                let currentId = '';
+                
+                sections.forEach(section => {
+                    // Use getBoundingClientRect to find position relative to the viewport
+                    const rect = section.getBoundingClientRect();
+                    // If the section top crosses the upper third of the screen, mark it as current
+                    if (rect.top <= window.innerHeight / 3) {
+                        currentId = section.getAttribute('id');
+                    }
+                });
+
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href') === `#${currentId}`) {
+                        link.classList.add('active');
+                    }
+                });
+            }
+
+            // Listen for scroll events on the main content container
+            contentContainer.addEventListener('scroll', updateActiveSection);
+            
+            // Allow manual clicks to apply active state immediately (smooth scrolling takes a moment)
+            navLinks.forEach(link => {
+                link.addEventListener('click', function() {
+                    navLinks.forEach(l => l.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+
+            // Initialize active link on page load
+            updateActiveSection();
+        });
+    </script>
 </body>
 </html>
