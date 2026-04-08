@@ -29,7 +29,7 @@ This project was used in a robotics/cubing camp to guide students through:
 
 ---
 
-## 🎓 Educational Use
+## Educational Use
 
 This project is designed for:
 
@@ -39,7 +39,7 @@ This project is designed for:
 
 ---
 
-## 🤝 Contributing
+## Contributing
 
 We welcome contributions!
 
@@ -52,12 +52,8 @@ Please keep code clear and well-documented since this is an educational project.
 
 ---
 
-## 📜 License
+## License
 
 This project is licensed under the MIT License.
 
 ---
-
-## 🙌 Acknowledgements
-
-Built for CubeSolver Camp 2025.
