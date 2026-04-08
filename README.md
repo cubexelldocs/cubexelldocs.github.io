@@ -24,7 +24,7 @@ This project was used in a robotics/cubing camp to guide students through:
 
 ### Prerequisites
 
-* Java (recommended age: 10+)
+* Java (recommended: 17+)
 * Gradle (or use included wrapper)
 
 ---
