@@ -199,7 +199,7 @@
                     <li><strong>Camera & Vision:</strong> A Raspberry Pi camera captures the cube's faces from below. OpenCV (via JavaCPP) processes the images to extract sticker colors.</li>
                     <li><strong>State Generation:</strong> The color data is mapped into a mathematical 3D array representation.</li>
                     <li><strong>Solver Engine:</strong> A selected algorithm calculates the most efficient series of moves.</li>
-                    <li><strong>Motor Control:</strong> The solution is translated into electronic signals sent via Pi4J to RHOS stepper motors.</li>
+                    <li><strong>Motor Control:</strong> The solution is translated into electronic signals sent via Pi4J to RoHS stepper motors.</li>
                 </ol>
             </section>
 
@@ -221,7 +221,7 @@ cd cubesolverCampFull
                 <h3>Hardware: Robot & Motors</h3>
                 <p>The <code>Robot</code> abstract class acts as the central hardware manager, maintaining references to six <code>Motor</code> interfaces (Up, Down, Right, Left, Front, Back). Its implementation is <code>RaspberryPiRobot</code>.</p>
                 
-                <p><strong><code>RohsStepperMotor.java</code></strong> implements <code>Motor</code> using <strong>Pi4J</strong> to control RHOS steppers. It uses a half-stepping 8-step magnet firing sequence to move the driver pins (<code>in1</code>, <code>in2</code>, <code>in3</code>, <code>in4</code>).</p>
+                <p><strong><code>RohsStepperMotor.java</code></strong> implements <code>Motor</code> using <strong>Pi4J</strong> to control RoHS steppers. It uses a half-stepping 8-step magnet firing sequence to move the driver pins (<code>in1</code>, <code>in2</code>, <code>in3</code>, <code>in4</code>).</p>
 <pre><code><span class="kw">public void</span> <span class="func">doTurn</span>(<span class="kw">double</span> stepsToTurn, <span class="kw">boolean</span> direction) {
     <span class="cmt">// ... loop iterates stepsToTurn times ...</span>
     <span class="kw">if</span> (stepSequence[motorStepCounter][<span class="num">0</span>] == <span class="num">1</span>) {
@@ -376,7 +376,7 @@ cd cubesolverCampFull
 
             <section id="tuning-motors">
                 <h3>Tuning Motor Timing</h3>
-                <p>If your RHOS steppers skip steps, adjust the nanosecond delay in <code>RohsStepperMotor.java</code>:</p>
+                <p>If your RoHS steppers skip steps, adjust the nanosecond delay in <code>RohsStepperMotor.java</code>:</p>
 <pre><code><span class="cmt">// In RohsStepperMotor.java -> doTurn() method</span>
 LockSupport.parkNanos(<span class="num">1000000</span>); <span class="cmt">// 1 millisecond. Increase for torque.</span></code></pre>
             </section>
