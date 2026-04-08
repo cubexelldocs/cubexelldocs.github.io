@@ -7,12 +7,12 @@ This project is designed to be educational and beginner-friendly, so contributio
 ## Getting Started
 
 1. Fork the repository
-2. Clone your fork:
+2. Now, on the Raspberry pi, Clone your fork:
 
    ```bash
    git clone https://github.com/YOUR_USERNAME/cubesolverCampFull.git
    ```
-3. Navigate into the project:
+3. Navigate into the project in terminal on the Raspberry pi:
 
    ```bash
    cd cubesolverCampFull
