@@ -173,7 +173,7 @@
         <a href="#ref-vision">Vision: Camera & Inspector</a>
         <a href="#ref-cube">Data: Cube & Constants</a>
         <a href="#ref-solvers">Solver Algorithms</a>
-        <a href="#ref-utils">Utilities (Scrambler & Fixer)</a>
+        <a href="#ref-utils">Utilities (Scrambler)</a>
 
         <div class="section-title">Usage</div>
         <a href="#usage-cli">Command Line Basics</a>
@@ -351,6 +351,28 @@ cd cubesolverCampFull
     <span class="kw">return</span> convertSolution(solution);
 }</code></pre>
                 <p><strong>How it works:</strong> The Kociemba mathematical solver requires a very specific 54-character string format (U1-U9, R1-R9, F1-F9, D1-D9, L1-L9, B1-B9). This code flattens the 3-dimensional <code>char[6][3][3]</code> array by appending each face sequentially to a <code>StringBuilder</code>. That formatted string is then passed to the external <code>org.kociemba.twophase.Search.solution()</code> engine to calculate the absolute mathematical minimum number of moves.</p>
+            </section>
+
+            <section id="ref-utils">
+                <h3>Utilities (Scrambler)</h3>
+                <p>The <code>CubeScrambler.java</code> class generates randomized sequences of valid moves to shuffle the puzzle. It features checks to ensure moves are not immediately redundant.</p>
+<pre><code><span class="kw">public</span> String[] <span class="func">getScramble</span>(<span class="kw">int</span> numMoves) {
+    String[] scramble = <span class="kw">new</span> String[numMoves];
+    scramble[<span class="num">0</span>] = randomScrambleMove();
+
+    <span class="kw">for</span>(<span class="kw">int</span> i=<span class="num">1</span>; i&lt;numMoves; i++){
+        <span class="kw">char</span> prevMoveFace = getFace(scramble[i-<span class="num">1</span>]);
+        String move = randomScrambleMove();
+        <span class="kw">char</span> moveFace = getFace(move);
+        <span class="kw">while</span>(moveFace == prevMoveFace) {
+            move = randomScrambleMove();
+            moveFace = getFace(move);
+        }
+        scramble[i] = move;
+    }
+    <span class="kw">return</span> scramble;
+}</code></pre>
+                <p><strong>How it works:</strong> When generating an array of strings representing scramble moves, this algorithm keeps track of the previous face turned using the <code>prevMoveFace</code> variable. The <code>while(moveFace == prevMoveFace)</code> loop acts as a safety guard; if the randomly selected move turns the exact same face as the step before it (like turning Right, then turning Right again), it continuously re-rolls the random selection until it gets a completely different face.</p>
             </section>
 
             <section id="usage-cli">
